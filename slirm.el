@@ -14,6 +14,25 @@
   (when (funcall direction "^@[a-zA-Z0-9]+{" nil t)
     (goto-char (match-beginning 0))))
 
+(defun slirm--bibtex-parse-next ()
+  "Convenience function to parse next entry."
+  (slirm--bibtex-move-point-to-entry slirm--next)
+  (bibtex-parse-entry t))
+
+(defun slirm--bibtex-parse-prev ()
+  "Convenience fuction to parse previous entry."
+  ;; Gotta move up twice.
+  (slirm--bibtex-move-point-to-entry slirm--prev)
+  (slirm--bibtex-move-point-to-entry slirm--prev)
+  (bibtex-parse-entry t)
+  )
+
+(defun slirm--bibtex-reparse ()
+  "Re-parse an entry, useful after modifications and so on."
+  (slirm--bibtex-move-point-to-entry slirm--prev)
+  (bibtex-parse-entry t)
+  )
+
 (defun slirm--bibtex-move-point-to-field (field)
   "Move point to start of FIELD's text."
   (when (re-search-backward (format "\s*%s\s*=[\s\t]*{" field) nil t)
