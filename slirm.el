@@ -35,6 +35,11 @@
   (when (not (slirm--get-field field entry))
     (slirm--add-field field)))
 
+(defun slirm--bibtex-write-to-field (field content)
+  "Fill a FIELD with CONTENT."
+  (slirm--bibtex-move-point-to-field field)
+  (insert content))
+
 (defconst slirm--review "review" "The review field name.")
 
 (defun slirm--make-user-annotation (annotation)
