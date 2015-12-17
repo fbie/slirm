@@ -1,4 +1,4 @@
-;;; slirm.el -- SLIRM is the Systematic Literature Review Mode for Emacs.
+;;; slirm.el -- Systematic Literature Review Mode for Emacs.
 ;;; Commentary:
 ;;; Code:
 
