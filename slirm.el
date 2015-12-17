@@ -52,6 +52,7 @@
   (when (re-search-forward regex nil t)
     (match-string 0)))
 
+;;; ACM utility functions to download full-text and abstract.
 (defun slirm--acm-get-full-text-link ()
   "Return the link to the full-text from the current buffer containing an ACM website."
   (slirm--first-match "ft_gateway\.cfm\\?id=[0-9]+&ftid=[0-9]+&dwn=[0-9]+&CFID=[0-9]+&CFTOKEN=[0-9]+"))
