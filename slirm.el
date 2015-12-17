@@ -4,11 +4,15 @@
 
 (require 'bibtex)
 
-(defun slirm--bibtex-parse-next-entry ()
-  "Parse the next entry."
+(defun slirm--bibtex-move-point-to-next-entry ()
+  "Move point to the next entry."
   (when (re-search-forward "^@[a-zA-Z0-9]+{" nil t)
-    (goto-char (match-beginning 0))
-    (bibtex-parse-entry t)))
+    (goto-char (match-beginning 0))))
+
+(defun slirm--bibtex-move-point-to-field (field)
+  "Move point to start of FIELD's text."
+  (when (re-search-backward (format "\s*%s\s*=[\s\t]*{" field) nil t)
+    (goto-char (match-end 0))))
 
 (defun slirm--bibtex-get-field (field entry)
   "Nil if FIELD is not present in ENTRY, otherwise the associated value."
@@ -16,11 +20,6 @@
     (if val
 	(cdr val)
       nil)))
-
-(defun slirm--bibtex-move-point-to-field (field)
-  "Move point to start of FIELD's text."
-  (when (re-search-backward (format "\s*%s\s*=[\s\t]*{" field) nil t)
-    (goto-char (match-end 0))))
 
 (defun slirm--bibtex-add-field (field)
   "Add a field FIELD to the entry."
@@ -36,7 +35,8 @@
 (defun slirm-parse-next-entry ()
   "Testing."
   (interactive)
-  (let ((entry (slirm--bibtex-parse-next-entry)))
+  (slirm--bibtex-move-point-to-next-entry)
+  (let ((entry (bibtex-parse-entry t)))
     (message (slirm--bibtex-get-field slirm--review entry))
     (slirm--bibtex-maybe-add-field slirm--review entry)
     (slirm--bibtex-move-point-to-field slirm--review)
