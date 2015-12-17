@@ -71,13 +71,22 @@
 	    (list (slirm--acm-get-abstract-link)
 		  (slirm--acm-get-full-text-link)))))
 
+(defun slirm--acm-get-abstract (url)
+  "Download and format abstract text from URL."
+  (with-current-buffer (url-retrieve-synchronously url)
+    (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (slirm--first-match "<p>.*</p>"))))
+
 (defun slirm-acm-get-links ()
   "Testing."
   (interactive)
   (slirm--bibtex-move-point-to-entry slirm--next)
   (let* ((entry (bibtex-parse-entry t))
-	 (url (slirm--bibtex-get-field "url" entry)))
-    (message (string-join (slirm--acm-get-links url) " "))
+	 (url (slirm--bibtex-get-field "url" entry))
+	 (urls (slirm--acm-get-links url)))
+    (slirm--bibtex-maybe-add-field "abstract" entry)
+    (slirm--bibtex-write-to-field "abstract" (slirm--acm-get-abstract (car urls)))
+    (slirm--bibtex-maybe-add-field "fullTextUrl" entry)
+    (slirm--bibtex-write-to-field "fullTextUrl" (car (cdr urls)))
     ))
 
 (defun slirm-parse-next-entry ()
