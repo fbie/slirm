@@ -30,7 +30,11 @@
   (when (not (slirm--get-field field entry))
     (slirm--add-field field)))
 
-(defvar slirm--review "review" "The review field name.")
+(defconst slirm--review "review" "The review field name.")
+
+(defun slirm--make-user-annotation (annotation)
+  "Make a string of the form \"user-login-name: ANNOTATION\"."
+  (format "%s: %s" user-login-name annotation))
 
 (defun slirm-parse-next-entry ()
   "Testing."
@@ -40,6 +44,7 @@
     (message (slirm--bibtex-get-field slirm--review entry))
     (slirm--bibtex-maybe-add-field slirm--review entry)
     (slirm--bibtex-move-point-to-field slirm--review)
+    (insert (slirm--make-user-annotation "reject"))
     ))
 
 (provide 'slirm)
