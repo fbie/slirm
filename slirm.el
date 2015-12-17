@@ -4,9 +4,14 @@
 
 (require 'bibtex)
 
-(defun slirm--bibtex-move-point-to-next-entry ()
-  "Move point to the next entry."
-  (when (re-search-forward "^@[a-zA-Z0-9]+{" nil t)
+;;; BibTeX utility functions for moving point from entry to entry and
+;;; to access fields conveniently.
+(defconst slirm--next 're-search-forward)
+(defconst slirm--prev 're-search-backward)
+
+(defun slirm--bibtex-move-point-to-entry (direction)
+  "Move point to the next entry in DIRECTION, which is one of slirm--{next, prev}."
+  (when (funcall direction "^@[a-zA-Z0-9]+{" nil t)
     (goto-char (match-beginning 0))))
 
 (defun slirm--bibtex-move-point-to-field (field)
@@ -58,13 +63,22 @@
   "Retrieves the links to the abstract and the full-text by retrieving ACM-URL."
   (with-current-buffer (url-retrieve-synchronously acm-url)
     (mapcar 'slirm--acm-make-dl-link
-     '(slirm--acm-get-abstract-link
-       slirm--acm-get-full-text-link))))
+	    (list (slirm--acm-get-abstract-link)
+		  (slirm--acm-get-full-text-link)))))
+
+(defun slirm-acm-get-links ()
+  "Testing."
+  (interactive)
+  (slirm--bibtex-move-point-to-entry slirm--next)
+  (let* ((entry (bibtex-parse-entry t))
+	 (url (slirm--bibtex-get-field "url" entry)))
+    (message (string-join (slirm--acm-get-links url) " "))
+    ))
 
 (defun slirm-parse-next-entry ()
   "Testing."
   (interactive)
-  (slirm--bibtex-move-point-to-next-entry)
+  (slirm--bibtex-move-point-to-entry slirm--next)
   (let ((entry (bibtex-parse-entry t)))
     (message (slirm--bibtex-get-field slirm--review entry))
     (slirm--bibtex-maybe-add-field slirm--review entry)
