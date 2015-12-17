@@ -36,6 +36,31 @@
   "Make a string of the form \"user-login-name: ANNOTATION\"."
   (format "%s: %s" user-login-name annotation))
 
+(defun slirm--first-match (regex)
+  "Return the first string matching REGEX in the entire buffer."
+  (goto-char (point-min))
+  (when (re-search-forward regex nil t)
+    (match-string 0)))
+
+(defun slirm--acm-get-full-text-link ()
+  "Return the link to the full-text from the current buffer containing an ACM website."
+  (slirm--first-match "ft_gateway\.cfm\\?id=[0-9]+&ftid=[0-9]+&dwn=[0-9]+&CFID=[0-9]+&CFTOKEN=[0-9]+"))
+
+(defun slirm--acm-get-abstract-link ()
+  "Return the link to the abstract from the current buffer containing an ACM website."
+  (slirm--first-match "tab_abstract\.cfm\\?id=[0-9]+&usebody=tabbody&cfid=[0-9]+&cftoken=[0-9]+"))
+
+(defun slirm--acm-make-dl-link (link)
+  "Build ACM link address from LINK."
+  (format "http://dl.acm.org/%s" link))
+
+(defun slirm--acm-get-links (acm-url)
+  "Retrieves the links to the abstract and the full-text by retrieving ACM-URL."
+  (with-current-buffer (url-retrieve-synchronously acm-url)
+    (mapcar 'slirm--acm-make-dl-link
+     '(slirm--acm-get-abstract-link
+       slirm--acm-get-full-text-link))))
+
 (defun slirm-parse-next-entry ()
   "Testing."
   (interactive)
