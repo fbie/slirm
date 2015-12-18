@@ -110,16 +110,38 @@
   (let ((es (reverse (split-string (match-string 0 url) "\\."))))
     (format "%s.%s" (car (cdr es)) (car es))))
 
-(defun slirm-acm-get-links ()
-  "Testing."
+(defconst slirm--get-links-map
+  (list
+   '("acm.org" slirm--acm-get-links)))
+
+(defconst slirm--get-abstract-map
+  (list
+   '("acm.org" slirm--acm-get-abstract)))
+
+(defun slirm--lookup (map key)
+  "Perform lookup in MAP for KEY."
+  (car (cdr (assoc key map))))
+
+(defun slirm--get-links (url)
+  "Get links from URL."
+  (let ((getter (slirm--lookup slirm--get-links-map (slirm--get-base-url url))))
+    (funcall getter url)))
+
+(defun slirm--get-abstract (url)
+  "Get abstract from URL."
+  (let ((getter (slirm--lookup slirm--get-abstract-map (slirm--get-base-url url))))
+    (funcall getter url)))
+
+(defun slirm-update-abstract-fullTextUrl ()
+  "Update abstract and fullTextURL fields if they are empty."
   (interactive)
   (let ((entry (slirm--bibtex-reparse)))
-    (when (not (and
+    (when (not (and ;; Any of the two fields is empty.
 		(slirm--bibtex-get-field slirm--abstract entry)
 		(slirm--bibtex-get-field slirm--full-text-url entry)))
       (let* ((url (slirm--bibtex-get-field "url" entry))
-	     (urls (slirm--acm-get-links url)))
-	(slirm--bibtex-maybe-write-to-field slirm--abstract entry (slirm--acm-get-abstract (car urls)))
+	     (urls (slirm--get-links url))) ;; Download from the article's website.
+	(slirm--bibtex-maybe-write-to-field slirm--abstract entry (slirm--get-abstract (car urls)))
 	(slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls)))
 	(message "Links updated!")))))
 
