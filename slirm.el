@@ -104,6 +104,12 @@
   (with-current-buffer (url-retrieve-synchronously url)
     (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (slirm--first-match "<p>.*</p>"))))
 
+(defun slirm--get-base-url (url)
+  "Return the base url of URL."
+  (string-match "[a-zA-Z0-0+\\.-]+\\.[a-zA-Z]+" url)
+  (let ((es (reverse (split-string (match-string 0 url) "\\."))))
+    (format "%s.%s" (car (cdr es)) (car es))))
+
 (defun slirm-acm-get-links ()
   "Testing."
   (interactive)
