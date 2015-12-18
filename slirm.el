@@ -73,7 +73,7 @@
 
 (defun slirm--make-user-annotation (annotation)
   "Make a string of the form \"user-login-name: ANNOTATION\"."
-  (format "%s: %s" user-login-name annotation))
+  (format "%s: %s," user-login-name annotation))
 
 (defun slirm--first-match (regex)
   "Return the first string matching REGEX in the entire buffer."
