@@ -134,29 +134,62 @@
   (let ((getter (slirm--lookup slirm--get-abstract-map (slirm--get-base-url url))))
     (funcall getter url)))
 
+(defun slirm--update-abstract-fullTextUrl (entry)
+  "Update abstract and fullTextURL fields if they are empty in ENTRY."
+  (when (not (and ;; Any of the two fields is empty.
+	      (slirm--bibtex-get-field slirm--abstract entry)
+	      (slirm--bibtex-get-field slirm--full-text-url entry)))
+    (let* ((url (slirm--bibtex-get-field "url" entry))
+	   (urls (slirm--get-links url))) ;; Download from the article's website.
+      (slirm--bibtex-maybe-write-to-field slirm--abstract entry (slirm--get-abstract (car urls)))
+      (slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls))))))
+
 (defun slirm-update-abstract-fullTextUrl ()
   "Update abstract and fullTextURL fields if they are empty."
   (interactive)
-  (let ((entry (slirm--bibtex-reparse)))
-    (when (not (and ;; Any of the two fields is empty.
-		(slirm--bibtex-get-field slirm--abstract entry)
-		(slirm--bibtex-get-field slirm--full-text-url entry)))
-      (let* ((url (slirm--bibtex-get-field "url" entry))
-	     (urls (slirm--get-links url))) ;; Download from the article's website.
-	(slirm--bibtex-maybe-write-to-field slirm--abstract entry (slirm--get-abstract (car urls)))
-	(slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls)))
-	(message "Links updated!")))))
+  (slirm--update-abstract-fullTextUrl (slirm--bibtex-reparse))
+)
 
-(defun slirm-parse-next-entry ()
-  "Testing."
+(defun slirm--mark-reviewed (entry review)
+  "Mark ENTRY as reviewed with REVIEW if not yet reviewed."
+  (slirm--bibtex-maybe-add-field slirm--review entry)
+  (let* ((entry (slirm--bibtex-reparse))
+	 (contents (slirm--bibtex-get-field slirm--review entry)))
+    (if (and contents (string-match-p (regexp-quote user-login-name) contents))
+	(message "Already reviewed, nothing to do.")
+      (progn
+	  (slirm--bibtex-write-to-field slirm--review (slirm--make-user-annotation review))
+	  (message (format "Marked %s as %s." (slirm--bibtex-get-field "=key=" entry) review))))))
+
+(defun slirm-accept ()
+  "Mark current entry as accepted."
   (interactive)
-  (slirm--bibtex-move-point-to-entry slirm--next)
-  (let ((entry (bibtex-parse-entry t)))
-    (message (slirm--bibtex-get-field slirm--review entry))
-    (slirm--bibtex-maybe-add-field slirm--review entry)
-    (slirm--bibtex-move-point-to-field slirm--review)
-    (insert (slirm--make-user-annotation "reject"))
-    ))
+  (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--accept))
+
+(defun slirm-reject ()
+  "Mark current entry as rejected."
+  (interactive)
+  (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--reject))
+
+(defun slirm--show (entry)
+  "Show ENTRY in the review buffer.")
+
+(defun slirm--update-and-show (entry)
+  "Show ENTRY in the review buffer after update."
+  (slirm--show (slirm--update-abstract-fullTextUrl entry)))
+
+(defun slirm-show-next ()
+  "Show the next entry in the review buffer."
+  (interactive)
+  (slirm-update-and-show (slirm--bibtex-parse-next)))
+
+(defun slirm-show-prev ()
+  "Show the previous entry in the review buffer."
+  (interactive)
+  (slirm-update-and-show (slirm--bibtex-parse-prev)))
+
+(defvar slirm-mode-hook nil)
+
 
 (provide 'slirm)
 ;;; slirm.el ends here
