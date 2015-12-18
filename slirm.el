@@ -47,7 +47,7 @@
 
 (defun slirm--bibtex-add-field (field)
   "Add a field FIELD to the entry."
-  (bibtex-make-field field t t 'nil))
+  (bibtex-make-field field t 'nil 'nil))
 
 (defun slirm--bibtex-maybe-add-field (field entry)
   "Add FIELD to ENTRY if not already present."
