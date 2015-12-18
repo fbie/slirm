@@ -66,6 +66,8 @@
     (slirm--bibtex-write-to-field field content)))
 
 (defconst slirm--review "review" "The review field name.")
+(defconst slirm--accept "accepted")
+(defconst slirm--reject "rejected")
 (defconst slirm--abstract "abstract" "The abstract field name.")
 (defconst slirm--full-text-url "fullTextUrl" "The fullTextUrl field name.")
 
