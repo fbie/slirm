@@ -229,13 +229,14 @@
   (declare (indent 1))
   (let ((outer (cl-gensym "outer-buffer"))
 	(body-res (cl-gensym "body-res"))) ;; This is the variable name
-    `(let ((,outer (current-buffer))) ;; Store current buffer, so we can switch to it to save point.) (with-current-buffer ,buffer
-	  (save-excursion
-	    (goto-char slirm--point)
-	    (let ((,body-res  (progn ,@body)))
-	      (with-current-buffer ,outer
-		(setq slirm--point))
-	      ,body-res)))))
+    `(let ((,outer (current-buffer))) ;; Store current buffer, so we can switch to it to save point.
+       (with-current-buffer ,buffer
+	 (save-excursion
+	   (goto-char slirm--point)
+	   (let ((,body-res  (progn ,@body)))
+	     (with-current-buffer ,outer
+	       (setq slirm--point))
+	     ,body-res))))))
 
 (defmacro slirm--with-bibtex-buffer (&rest body)
   "Perform BODY in slirm--bibtex-buffer."
