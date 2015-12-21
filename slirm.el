@@ -242,7 +242,7 @@
   "Perform BODY in slirm--bibtex-buffer."
   (declare (indent 0))
   `(slirm--with-current-buffer (slirm--bibtex-buffer)
-			       ,@body))
+     ,@body))
 
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
