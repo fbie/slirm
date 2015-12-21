@@ -222,7 +222,6 @@
   (let ((file (buffer-file-name)))
     (pop-to-buffer (get-buffer-create (format "*Review of %s*" file)))
     (setq slirm--bibtex-file file)
-    (slirm--bibtex-buffer)
     (slirm-mode)))
 
 (defmacro slirm--with-current-buffer (buffer &rest body)
