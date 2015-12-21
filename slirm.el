@@ -161,9 +161,8 @@
 	 (contents (slirm--bibtex-get-field slirm--review entry)))
     (if (and contents (string-match-p (regexp-quote user-login-name) contents))
 	(message "Already reviewed, nothing to do.")
-      (progn
-	  (slirm--bibtex-write-to-field slirm--review (slirm--make-user-annotation review))
-	  (message (format "Marked %s as %s." (slirm--bibtex-get-field "=key=" entry) review))))))
+      (slirm--bibtex-write-to-field slirm--review (slirm--make-user-annotation review))
+      (message (format "Marked %s as %s." (slirm--bibtex-get-field "=key=" entry) review)))))
 
 (defun slirm-accept ()
   "Mark current entry as accepted."
