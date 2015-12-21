@@ -110,11 +110,7 @@
   (with-current-buffer (url-retrieve-synchronously url)
     (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (slirm--first-match "<p>.*</p>"))))
 
-(defun slirm--get-base-url (url)
-  "Return the base url of URL."
-  (string-match "[a-zA-Z0-0+\\.-]+\\.[a-zA-Z]+" url)
-  (let ((es (reverse (split-string (match-string 0 url) "\\."))))
-    (format "%s.%s" (car (cdr es)) (car es))))
+;; Slirm URL handlers.
 
 (defconst slirm--get-links-map
   (list
@@ -127,6 +123,14 @@
 (defun slirm--lookup (map key)
   "Perform lookup in MAP for KEY."
   (car (cdr (assoc key map))))
+
+;; Functions for downloading webcontent, based on the mode handlers.
+
+(defun slirm--get-base-url (url)
+  "Return the base url of URL."
+  (string-match "[a-zA-Z0-0+\\.-]+\\.[a-zA-Z]+" url)
+  (let ((es (reverse (split-string (match-string 0 url) "\\."))))
+    (format "%s.%s" (car (cdr es)) (car es))))
 
 (defun slirm--get-links (url)
   "Get links from URL."
@@ -153,6 +157,8 @@
   (interactive)
   (slirm--update-abstract-fullTextUrl (slirm--bibtex-reparse))
 )
+
+;; The main Slirm interaction functions.
 
 (defun slirm--mark-reviewed (entry review)
   "Mark ENTRY as reviewed with REVIEW if not yet reviewed."
@@ -206,7 +212,11 @@
   (interactive)
   (slirm--update-and-show (slirm--bibtex-parse-prev)))
 
+;; Mode hook.
 (defvar slirm-mode-hook nil)
+
+;; Local variables for keeping track of the corresponding BibTeX file
+;; and the corresponding point.
 (defvar-local slirm--bibtex-file nil)
 (defvar-local slirm--point 0)
 
@@ -221,6 +231,9 @@
     (pop-to-buffer (get-buffer-create (format "*Review of %s*" file)))
     (setq slirm--bibtex-file file)
     (slirm-mode)))
+
+;; Macros to handle with-current-buffer so that we can keep references
+;; to the point of the buffer that we modify.
 
 (defmacro slirm--with-current-buffer (buffer &rest body)
   "Like (with-current-buffer BUFFER (save-excursion &BODY)) but save the point."
