@@ -11,31 +11,25 @@
 
 (defun slirm--bibtex-move-point-to-entry (direction)
   "Move point to the next entry in DIRECTION, which is one of slirm--{next, prev}."
-  (slirm--with-bibtex-buffer
-    (when (funcall direction "^@[a-zA-Z0-9]+{" nil t)
-      (goto-char (match-beginning 0)))))
+  (when (funcall direction "^@[a-zA-Z0-9]+{" nil t)
+    (goto-char (match-beginning 0))))
 
 (defun slirm--bibtex-parse-next ()
   "Convenience function to parse next entry."
-  (slirm--with-bibtex-buffer
-    (slirm--bibtex-move-point-to-entry slirm--next)
-    (bibtex-parse-entry t)))
+  (slirm--bibtex-move-point-to-entry slirm--next)
+  (bibtex-parse-entry t))
 
 (defun slirm--bibtex-parse-prev ()
   "Convenience fuction to parse previous entry."
   ;; Gotta move up twice.
-  (slirm--with-bibtex-buffer
-    (slirm--bibtex-move-point-to-entry slirm--prev)
-    (slirm--bibtex-move-point-to-entry slirm--prev)
-    (bibtex-parse-entry t))
-  )
+  (slirm--bibtex-move-point-to-entry slirm--prev)
+  (slirm--bibtex-move-point-to-entry slirm--prev)
+  (bibtex-parse-entry t))
 
 (defun slirm--bibtex-reparse ()
   "Re-parse an entry, useful after modifications and so on."
-  (slirm--with-bibtex-buffer
-    (slirm--bibtex-move-point-to-entry slirm--prev)
-    (bibtex-parse-entry t))
-  )
+  (slirm--bibtex-move-point-to-entry slirm--prev)
+  (bibtex-parse-entry t))
 
 (defun slirm--bibtex-move-point-to-field (field)
   "Move point to start of FIELD's text."
@@ -155,7 +149,8 @@
 (defun slirm-update-abstract-fullTextUrl ()
   "Update abstract and fullTextURL fields if they are empty."
   (interactive)
-  (slirm--update-abstract-fullTextUrl (slirm--bibtex-reparse))
+  (slirm--with-bibtex-buffer
+    (slirm--update-abstract-fullTextUrl (slirm--bibtex-reparse)))
 )
 
 ;; The main Slirm interaction functions.
@@ -173,12 +168,14 @@
 (defun slirm-accept ()
   "Mark current entry as accepted."
   (interactive)
-  (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--accept))
+  (slirm--with-bibtex-buffer
+    (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--accept)))
 
 (defun slirm-reject ()
   "Mark current entry as rejected."
   (interactive)
-  (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--reject))
+  (slirm--with-bibtex-buffer
+    (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--reject)))
 
 (defun slirm--clear ()
   "Clear current slirm buffer."
@@ -205,12 +202,14 @@
 (defun slirm-show-next ()
   "Show the next entry in the review buffer."
   (interactive)
-  (slirm--update-and-show (slirm--bibtex-parse-next)))
+  (slirm--update-and-show (slirm--with-bibtex-buffer
+			    (slirm--bibtex-parse-next))))
 
 (defun slirm-show-prev ()
   "Show the previous entry in the review buffer."
   (interactive)
-  (slirm--update-and-show (slirm--bibtex-parse-prev)))
+  (slirm--update-and-show (slirm--with-bibtex-buffer
+			    (slirm--bibtex-parse-prev))))
 
 ;; Mode hook.
 (defvar slirm-mode-hook nil)
