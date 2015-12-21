@@ -171,25 +171,83 @@
   (interactive)
   (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--reject))
 
+(defun slirm--clear ()
+  "Clear current slirm buffer."
+  (delete-region (point-min) (point-max)))
+
 (defun slirm--show (entry)
-  "Show ENTRY in the review buffer.")
+  "Show ENTRY in the review buffer."
+  (slirm--clear)
+  (goto-char (point-min))
+  (insert (slirm--bibtex-get-field "title" entry))
+  (insert "\n")
+  (insert "\n")
+  (insert (string-join (slirm--bibtex-get-field "author" entry)) ", "))
 
 (defun slirm--update-and-show (entry)
   "Show ENTRY in the review buffer after update."
-  (slirm--show (slirm--update-abstract-fullTextUrl entry)))
+  (slirm--show entry)
+  ;; TODO: Re-enable downloading and handle missing internet connection
+  ;; (slirm--show
+  ;;  (slirm--with-bibtex-buffer
+  ;;    (slirm--update-abstract-fullTextUrl entry)))
+  )
 
 (defun slirm-show-next ()
   "Show the next entry in the review buffer."
   (interactive)
-  (slirm-update-and-show (slirm--bibtex-parse-next)))
+  (slirm--update-and-show
+   (slirm--with-bibtex-buffer
+     (slirm--bibtex-parse-next))))
 
 (defun slirm-show-prev ()
   "Show the previous entry in the review buffer."
   (interactive)
-  (slirm-update-and-show (slirm--bibtex-parse-prev)))
+  (slirm--update-and-show (slirm--bibtex-parse-prev)))
 
 (defvar slirm-mode-hook nil)
+(defvar-local slirm--bibtex-file nil)
+(defvar-local slirm--point 0)
 
+(defun slirm--bibtex-buffer ()
+  "Return the buffer containing the BibTeX file."
+  (find-file slirm--bibtex-file))
 
-(provide 'slirm)
+(defun slirm-start ()
+  "Start a systematic literature review of the BibTeX file in the current buffer."
+  (interactive)
+  (let ((file (buffer-file-name)))
+    (pop-to-buffer (get-buffer-create (format "*Review of %s*" file)))
+    (setq slirm--bibtex-file file)
+    (slirm--bibtex-buffer)
+    (slirm-mode)))
+
+(defmacro slirm--with-current-buffer (buffer &rest body)
+  "Like (with-current-buffer BUFFER (save-excursion &BODY)) but save the point."
+  (declare (indent 1))
+  (let ((outer (cl-gensym "outer-buffer"))
+	(body-res (cl-gensym "body-res"))) ;; This is the variable name
+    `(let ((,outer (current-buffer))) ;; Store current buffer, so we can switch to it to save point.) (with-current-buffer ,buffer
+	  (save-excursion
+	    (goto-char slirm--point)
+	    (let ((,body-res  (progn ,@body)))
+	      (with-current-buffer ,outer
+		(setq slirm--point))
+	      ,body-res)))))
+
+(defmacro slirm--with-bibtex-buffer (&rest body)
+  "Perform BODY in slirm--bibtex-buffer."
+  (declare (indent 0))
+  `(slirm--with-current-buffer (slirm--bibtex-buffer)
+			       ,@body))
+
+(define-derived-mode slirm-mode special-mode
+  "Systematic Literature Review Mode."
+  (slirm-show-next))
+
+(provide 'slirm-start)
+(provide 'slirm-show-next)
+(provide 'slirm-show-prev)
+(provide 'slirm-accept)
+(provide 'slirm-reject)
 ;;; slirm.el ends here
