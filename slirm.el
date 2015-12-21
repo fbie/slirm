@@ -199,9 +199,7 @@
 (defun slirm-show-next ()
   "Show the next entry in the review buffer."
   (interactive)
-  (slirm--update-and-show
-   (slirm--with-bibtex-buffer
-     (slirm--bibtex-parse-next))))
+  (slirm--update-and-show (slirm--bibtex-parse-next)))
 
 (defun slirm-show-prev ()
   "Show the previous entry in the review buffer."
