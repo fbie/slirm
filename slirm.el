@@ -216,8 +216,9 @@
 
 ;; Local variables for keeping track of the corresponding BibTeX file
 ;; and the corresponding point.
-(defvar-local slirm--bibtex-file nil)
-(defvar-local slirm--point 0)
+(defvar slirm--bibtex-file-tmp "" "The name of the BibTeX file, temporarily.")
+(defvar-local slirm--bibtex-file "" "The name of the BibTeX file.")
+(defvar-local slirm--point 0 "Slirm's point in the BibTeX file.")
 
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
@@ -227,8 +228,8 @@
   "Start a systematic literature review of the BibTeX file in the current buffer."
   (interactive)
   (let ((file (buffer-file-name)))
-    (pop-to-buffer (get-buffer-create (format "*Review of %s*" file)))
-    (setq slirm--bibtex-file file)
+    (set-buffer (pop-to-buffer (get-buffer-create (format "*Review of %s*" file))))
+    (setq slirm--bibtex-file-tmp file)
     (slirm-mode)))
 
 ;; Macros to handle with-current-buffer so that we can keep references
@@ -258,6 +259,7 @@
 
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
+  (setq slirm--bibtex-file slirm--bibtex-file-tmp)
   (slirm-show-next))
 
 (provide 'slirm-start)
