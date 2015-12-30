@@ -185,12 +185,14 @@
 
 (defun slirm--show (entry)
   "Show ENTRY in the review buffer."
+  (setq inhibit-read-only t)
   (slirm--clear)
   (goto-char (point-min))
   (insert (slirm--bibtex-get-field "title" entry))
   (insert "\n")
   (insert "\n")
-  (insert (string-join (slirm--bibtex-get-field "author" entry)) ", "))
+  (insert (slirm--bibtex-get-field "author" entry))
+  (setq inhibit-read-only nil))
 
 (defun slirm--update-and-show (entry)
   "Show ENTRY in the review buffer after update."
