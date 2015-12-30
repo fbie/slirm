@@ -105,18 +105,20 @@
     (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (slirm--first-match "<p>.*</p>"))))
 
 ;; Slirm URL handlers.
-
-(defconst slirm--get-links-map
-  (list
-   '("acm.org" slirm--acm-get-links)))
-
-(defconst slirm--get-abstract-map
-  (list
-   '("acm.org" slirm--acm-get-abstract)))
+(defvar slirm--get-links-map nil)
+(defvar slirm--get-abstract-map nil)
 
 (defun slirm--lookup (map key)
   "Perform lookup in MAP for KEY."
   (car (cdr (assoc key map))))
+
+(defun slirm-add-handlers (url links-handler abstract-handler)
+  "Add handlers for URL, e.g. \"acm.org\".  LINKS-HANDLER must accept a url and return a list of links, ABSTRACT-HANDLER must accept a url and return a string."
+  (setq slirm--get-links-map (cons (list url links-handler) slirm--get-links-map))
+  (setq slirm--get-abstract-map (cons (list url abstract-handler) slirm--get-abstract-map))
+  )
+
+(slirm-add-handlers "acm.org" 'slirm--acm-get-links 'slirm--acm-get-abstract)
 
 ;; Functions for downloading webcontent, based on the mode handlers.
 
