@@ -248,9 +248,10 @@
        (with-current-buffer ,buffer
 	 (save-excursion
 	   (goto-char slirm--point) ;; Load point.
-	   (let ((,body-res  (progn ,@body))) ;; Execute body and bind result.
+	   (let ((,body-res  (progn ,@body)) ;; Execute body and bind result.
+		 (current-point (point)))
 	     (with-current-buffer ,outer ;; Return to current buffer.
-	       (setq slirm--point)) ;; Store point and return to BibTeX buffer.
+	       (setq slirm--point current-point)) ;; Store point and return to BibTeX buffer.
 	     ,body-res)))))) ;; Return body's result.
 
 (defmacro slirm--with-bibtex-buffer (&rest body)
