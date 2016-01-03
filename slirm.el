@@ -219,6 +219,13 @@
   (slirm--update-and-show (slirm--with-bibtex-buffer
 			    (slirm--bibtex-parse-prev))))
 
+(defun slirm-accept-or-reject ()
+  "Choose whether to accept or reject entry."
+  (interactive)
+  (if (yes-or-no-p "Accept current entry? ")
+      (slirm-accept)
+    (slirm-reject)))
+
 ;; Mode hook.
 (defvar slirm-mode-hook nil)
 
@@ -284,10 +291,12 @@
 
 (define-key slirm-mode-map (kbd "n") 'slirm-show-next)
 (define-key slirm-mode-map (kbd "p") 'slirm-show-prev)
+(define-key slirm-mode-map (kbd "SPC") 'slirm-accept-or-reject)
 
 (provide 'slirm-start)
 (provide 'slirm-show-next)
 (provide 'slirm-show-prev)
 (provide 'slirm-accept)
 (provide 'slirm-reject)
+(provide 'slirm-accept-or-reject)
 ;;; slirm.el ends here
