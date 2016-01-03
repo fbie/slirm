@@ -146,7 +146,8 @@
     (let* ((url (slirm--bibtex-get-field "url" entry))
 	   (urls (slirm--get-links url))) ;; Download from the article's website.
       (slirm--bibtex-maybe-write-to-field slirm--abstract entry (slirm--get-abstract (car urls)))
-      (slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls))))))
+      (slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls)))
+      (save-buffer))))
 
 (defun slirm-update-abstract-fullTextUrl ()
   "Update abstract and fullTextURL fields if they are empty."
