@@ -195,12 +195,10 @@
 
 (defun slirm--update-and-show (entry)
   "Show ENTRY in the review buffer after update."
-  (slirm--show entry)
-  ;; TODO: Re-enable downloading and handle missing internet connection
-  ;; (slirm--show
-  ;;  (slirm--with-bibtex-buffer
-  ;;    (slirm--update-abstract-fullTextUrl entry)))
-  )
+  (slirm--show
+   (slirm--with-bibtex-buffer
+     (slirm--update-abstract-fullTextUrl entry)
+     (slirm--bibtex-reparse))))
 
 (defun slirm-show-next ()
   "Show the next entry in the review buffer."
