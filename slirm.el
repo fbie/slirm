@@ -262,7 +262,7 @@
 
 (defmacro slirm--override-readonly (&rest body)
   "Execute BODY, overriding readonly mode."
-  (declare (indent 1))
+  (declare (indent 0))
   `(progn
      (setq inhibit-read-only t)
      (progn ,@body)
