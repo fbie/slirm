@@ -50,7 +50,7 @@
 (defun slirm--bibtex-maybe-add-field (field entry)
   "Add FIELD to ENTRY if not already present."
   (when (not (slirm--bibtex-get-field field entry))
-    (slirm--bibetex-add-field field)
+    (slirm--bibtex-add-field field)
     t))
 
 (defun slirm--bibtex-write-to-field (field content)
