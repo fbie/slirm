@@ -186,14 +186,12 @@
 
 (defun slirm--show (entry)
   "Show ENTRY in the review buffer."
-  (setq inhibit-read-only t)
-  (slirm--clear)
-  (goto-char (point-min))
-  (insert (slirm--bibtex-get-field "title" entry))
-  (insert "\n")
-  (insert "\n")
-  (insert (slirm--bibtex-get-field "author" entry))
-  (setq inhibit-read-only nil))
+  (slirm--override-readonly
+    (slirm--clear)
+    (goto-char (point-min))
+    (insert (format "Title:\n%s\n\n" (slirm--bibtex-get-field "title" entry)))
+    (insert (format "Author(s):\n%s\n\n" (slirm--bibtex-get-field "author" entry)))
+    (insert (format "Abstract:\n%s\n" (slirm--bibtex-get-field "abstract" entry)))))
 
 (defun slirm--update-and-show (entry)
   "Show ENTRY in the review buffer after update."
@@ -262,6 +260,14 @@
   (declare (indent 0))
   `(slirm--with-current-buffer (slirm--bibtex-buffer)
      ,@body))
+
+(defmacro slirm--override-readonly (&rest body)
+  "Execute BODY, overriding readonly mode."
+  (declare (indent 1))
+  `(progn
+    (setq inhibit-read-only t)
+    (progn ,@body)
+    (setq inhibit-read-only nil)))
 
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
