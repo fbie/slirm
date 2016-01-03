@@ -243,11 +243,13 @@
   ;; to our point in the BibTeX buffer.
   (let ((outer (cl-gensym "outer-buffer"))
 	(body-res (cl-gensym "body-res"))
-	(current-point (cl-gensym "current-point")))
-    `(let ((,outer (current-buffer))) ;; Store current buffer.
+	(current-point (cl-gensym "current-point"))
+	(slirm-point (cl-gensym "slirm-point")))
+    `(let ((,outer (current-buffer)) ;; Store current buffer.
+	   (,slirm-point slirm--point))
        (with-current-buffer ,buffer
 	 (save-excursion
-	   (goto-char slirm--point) ;; Load point.
+	   (goto-char ,slirm-point) ;; Load point.
 	   (let ((,body-res  (progn ,@body)) ;; Execute body and bind result.
 		 (,current-point (point)))
 	     (with-current-buffer ,outer ;; Return to current buffer.
