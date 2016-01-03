@@ -184,14 +184,21 @@
   "Clear current slirm buffer."
   (delete-region (point-min) (point-max)))
 
+(defun slirm--insert-paragraph (title text)
+  "Insert and format a paragraph with TITLE as header and TEXT as body."
+  (insert (format "%s:\n\n" title))
+  (insert text)
+  (fill-paragraph t)
+  (insert "\n\n\n"))
+
 (defun slirm--show (entry)
   "Show ENTRY in the review buffer."
   (slirm--override-readonly
     (slirm--clear)
     (goto-char (point-min))
-    (insert (format "Title:\n%s\n\n" (slirm--bibtex-get-field "title" entry)))
-    (insert (format "Author(s):\n%s\n\n" (slirm--bibtex-get-field "author" entry)))
-    (insert (format "Abstract:\n%s\n" (slirm--bibtex-get-field "abstract" entry)))))
+    (slirm--insert-paragraph "Title" (slirm--bibtex-get-field "title" entry))
+    (slirm--insert-paragraph "Author(s)" (slirm--bibtex-get-field "author" entry))
+    (slirm--insert-paragraph "Abstract" (slirm--bibtex-get-field "abstract" entry))))
 
 (defun slirm--update-and-show (entry)
   "Show ENTRY in the review buffer after update."
