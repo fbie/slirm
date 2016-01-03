@@ -282,6 +282,9 @@
   (setq slirm--bibtex-file slirm--bibtex-file-tmp)
   (slirm-show-next))
 
+(define-key slirm-mode-map (kbd "n") 'slirm-show-next)
+(define-key slirm-mode-map (kbd "p") 'slirm-show-prev)
+
 (provide 'slirm-start)
 (provide 'slirm-show-next)
 (provide 'slirm-show-prev)
