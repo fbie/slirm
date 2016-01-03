@@ -264,9 +264,9 @@
   "Execute BODY, overriding readonly mode."
   (declare (indent 1))
   `(progn
-    (setq inhibit-read-only t)
-    (progn ,@body)
-    (setq inhibit-read-only nil)))
+     (setq inhibit-read-only t)
+     (progn ,@body)
+     (setq inhibit-read-only nil)))
 
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
