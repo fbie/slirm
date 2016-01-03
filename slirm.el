@@ -219,12 +219,35 @@
   (slirm--update-and-show (slirm--with-bibtex-buffer
 			    (slirm--bibtex-parse-prev))))
 
+(defun slirm--find-next-undecided ()
+  "Return next undecided entry."
+  (let ((entry (slirm--bibtex-parse-next)))
+    (if (not (slirm--bibtex-get-field slirm--review entry))
+	entry
+      (slirm--find-next-undecided))))
+
+(defun slirm-show-next-undecided ()
+  "Show next undecided entry after current point."
+  (interactive)
+  (slirm--update-and-show
+   (slirm--with-bibtex-buffer
+    (slirm--find-next-undecided))))
+
+(defun slirm-show-first-undecided ()
+  "Show the first not yet annotated entry."
+  (interactive)
+  (slirm--update-and-show
+   (slirm--with-bibtex-buffer
+     (goto-char 0)
+     (slirm--find-next-undecided))))
+
 (defun slirm-accept-or-reject ()
   "Choose whether to accept or reject entry."
   (interactive)
   (if (yes-or-no-p "Accept current entry? ")
       (slirm-accept)
-    (slirm-reject)))
+    (slirm-reject))
+  (slirm-show-next-undecided))
 
 ;; Mode hook.
 (defvar slirm-mode-hook nil)
@@ -287,10 +310,12 @@
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
   (setq slirm--bibtex-file slirm--bibtex-file-tmp)
-  (slirm-show-next))
+  (slirm-show-first-undecided))
 
 (define-key slirm-mode-map (kbd "n") 'slirm-show-next)
+(define-key slirm-mode-map (kbd "C-n") 'slirm-show-next-undecided)
 (define-key slirm-mode-map (kbd "p") 'slirm-show-prev)
+(define-key slirm-mode-map (kbd "C-f") 'slirm-show-first-undecided)
 (define-key slirm-mode-map (kbd "SPC") 'slirm-accept-or-reject)
 
 (provide 'slirm-start)
