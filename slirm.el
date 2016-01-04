@@ -200,7 +200,8 @@
     (slirm--insert-paragraph "Title" (slirm--bibtex-get-field "title" entry))
     (slirm--insert-paragraph "Author(s)" (slirm--bibtex-get-field "author" entry))
     (slirm--insert-paragraph "Year" (slirm--bibtex-get-field "year" entry))
-    (slirm--insert-paragraph "Journal/Conference" (slirm--bibtex-get-field "booktitle" entry))
+    (slirm--insert-paragraph "In" (or (slirm--bibtex-get-field "booktitle" entry)
+				      (slirm--bibtex-get-field "journal" entry)))
     (slirm--insert-paragraph "Abstract" (slirm--bibtex-get-field "abstract" entry))
     (slirm--insert-paragraph "Keywords" (slirm--bibtex-get-field "keywords" entry))))
 
