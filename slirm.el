@@ -229,11 +229,11 @@
 
 (defun slirm--find-next-undecided ()
   "Return next undecided entry or the last entry in the list."
-  (let ((entry (slirm--bibtex-reparse)))
-    (while (and (not (slirm--bibtex-get-field slirm--review entry))
-		(not (slirm--bibtex-move-point-to-entry slirm--next)))
-      (setq entry (slirm--bibtex-reparse))
-	entry)))
+  (let ((entry (slirm--bibtex-parse-next)))
+    (while (and (slirm--bibtex-get-field slirm--review entry) ;; Already reviewed.
+		(< (- (point) (point-max)) 3))
+      (setq entry (slirm--bibtex-parse-next)))
+    entry))
 
 (defun slirm-show-next-undecided ()
   "Show next undecided entry after current point."
