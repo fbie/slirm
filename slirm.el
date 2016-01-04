@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'bibtex)
-(require 'tco)
 
 ;;; BibTeX utility functions for moving point from entry to entry and
 ;;; to access fields conveniently.
@@ -12,8 +11,10 @@
 
 (defun slirm--bibtex-move-point-to-entry (direction)
   "Move point to the next entry in DIRECTION, which is one of slirm--{next, prev}."
-  (when (funcall direction "^@[a-zA-Z0-9]+{" nil t)
-    (goto-char (match-beginning 0))))
+  (if (not (funcall direction "^@[a-zA-Z0-9]+{" nil t))
+      nil
+    (goto-char (match-beginning 0))
+    t))
 
 (defun slirm--bibtex-parse-next ()
   "Convenience function to parse next entry."
@@ -223,12 +224,13 @@
   (slirm--update-and-show (slirm--with-bibtex-buffer
 			    (slirm--bibtex-parse-prev))))
 
-(defun-tco slirm--find-next-undecided ()
-  "Return next undecided entry."
-  (let ((entry (slirm--bibtex-parse-next)))
-    (if (not (slirm--bibtex-get-field slirm--review entry))
-	entry
-      (slirm--find-next-undecided))))
+(defun slirm--find-next-undecided ()
+  "Return next undecided entry or the last entry in the list."
+  (let ((entry (slirm--bibtex-reparse)))
+    (while (and (not (slirm--bibtex-get-field slirm--review entry))
+		(not (slirm--bibtex-move-point-to-entry slirm--next)))
+      (setq entry (slirm--bibtex-reparse))
+	entry)))
 
 (defun slirm-show-next-undecided ()
   "Show next undecided entry after current point."
