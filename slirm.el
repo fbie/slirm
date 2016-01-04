@@ -117,8 +117,7 @@
 (defun slirm-add-handlers (url links-handler abstract-handler)
   "Add handlers for URL, e.g. \"acm.org\".  LINKS-HANDLER must accept a url and return a list of links, ABSTRACT-HANDLER must accept a url and return a string."
   (setq slirm--get-links-map (cons (list url links-handler) slirm--get-links-map))
-  (setq slirm--get-abstract-map (cons (list url abstract-handler) slirm--get-abstract-map))
-  )
+  (setq slirm--get-abstract-map (cons (list url abstract-handler) slirm--get-abstract-map)))
 
 (slirm-add-handlers "acm.org" 'slirm--acm-get-links 'slirm--acm-get-abstract)
 
