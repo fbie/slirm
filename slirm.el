@@ -62,8 +62,8 @@
     (insert content)))
 
 (defun slirm--bibtex-maybe-write-to-field (field entry content)
-  "Write to FIELD if ENTRY does not contain it.  CONTENT is what is written."
-  (when (slirm--bibtex-maybe-add-field field entry)
+  "Write to FIELD if ENTRY does not contain it.  CONTENT is what is written if non-nil."
+  (when (and content (slirm--bibtex-maybe-add-field field entry))
     (slirm--bibtex-write-to-field field content)))
 
 (defconst slirm--review "review" "The review field name.")
