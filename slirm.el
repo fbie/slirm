@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'bibtex)
+(require 'tco)
 
 ;;; BibTeX utility functions for moving point from entry to entry and
 ;;; to access fields conveniently.
@@ -219,7 +220,7 @@
   (slirm--update-and-show (slirm--with-bibtex-buffer
 			    (slirm--bibtex-parse-prev))))
 
-(defun slirm--find-next-undecided ()
+(defun-tco slirm--find-next-undecided ()
   "Return next undecided entry."
   (let ((entry (slirm--bibtex-parse-next)))
     (if (not (slirm--bibtex-get-field slirm--review entry))
