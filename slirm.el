@@ -287,20 +287,17 @@
   (declare (indent 1))
   ;; We jump through a bunch of hoops to keep a buffer-local reference
   ;; to our point in the BibTeX buffer.
-  (let ((outer (cl-gensym "outer-buffer"))
-	(body-res (cl-gensym "body-res"))
-	(current-point (cl-gensym "current-point"))
-	(slirm-point (cl-gensym "slirm-point")))
-    `(let ((,outer (current-buffer)) ;; Store current buffer.
-	   (,slirm-point slirm--point))
+  (let ((body-res (make-symbol "body-res"))
+	(current-point (make-symbol "current-point")))
+    `(let ((,current-point slirm--point)
+	   (,body-res nil))
        (with-current-buffer ,buffer
 	 (save-excursion
-	   (goto-char ,slirm-point) ;; Load point.
-	   (let ((,body-res  (progn ,@body)) ;; Execute body and bind result.
-		 (,current-point (point)))
-	     (with-current-buffer ,outer ;; Return to current buffer.
-	       (setq slirm--point ,current-point)) ;; Store point and return to BibTeX buffer.
-	     ,body-res)))))) ;; Return body's result.
+	   (goto-char ,current-point)	  ;; Load point.
+	   (setq ,body-res (progn ,@body) ;; Execute body and bind result.
+		 ,current-point (point)))) ;; Store point and return to BibTeX buffer.
+       (setq slirm--point ,current-point)
+       ,body-res))) ;; Return body's result.
 
 (defmacro slirm--with-bibtex-buffer (&rest body)
   "Perform BODY in slirm--bibtex-buffer."
