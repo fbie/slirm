@@ -287,8 +287,8 @@
   (declare (indent 1))
   ;; We jump through a bunch of hoops to keep a buffer-local reference
   ;; to our point in the BibTeX buffer.
-  (let ((body-res (make-symbol "body-res"))
-	(current-point (make-symbol "current-point")))
+  (let ((body-res (cl-gensym "body-res"))
+	(current-point (cl-gensym "current-point")))
     `(let ((,current-point slirm--point)
 	   (,body-res nil))
        (with-current-buffer ,buffer
