@@ -56,9 +56,10 @@
     t))
 
 (defun slirm--bibtex-write-to-field (field content)
-  "Fill a FIELD with CONTENT."
-  (slirm--bibtex-move-point-to-field field)
-  (insert content))
+  "Fill a FIELD with CONTENT if CONTENT is non-nil."
+  (when content
+    (slirm--bibtex-move-point-to-field field)
+    (insert content)))
 
 (defun slirm--bibtex-maybe-write-to-field (field entry content)
   "Write to FIELD if ENTRY does not contain it.  CONTENT is what is written."
@@ -92,7 +93,9 @@
 
 (defun slirm--acm-make-dl-link (link)
   "Build ACM link address from LINK."
-  (format "http://dl.acm.org/%s" link))
+  (if link
+      (format "http://dl.acm.org/%s" link)
+    nil))
 
 (defun slirm--acm-get-links (acm-url)
   "Retrieves the links to the abstract and the full-text by retrieving ACM-URL."
@@ -104,7 +107,7 @@
 (defun slirm--acm-get-abstract (url)
   "Download and format abstract text from URL."
   (with-current-buffer (url-retrieve-synchronously url)
-    (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (or (slirm--first-match "<p>.*</p>") ""))))
+    (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (or (slirm--first-match "<p>.*</p>") "<Missing>"))))
 
 ;; Slirm URL handlers.
 (defvar slirm--get-links-map nil)
