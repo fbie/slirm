@@ -104,7 +104,7 @@
 (defun slirm--acm-get-abstract (url)
   "Download and format abstract text from URL."
   (with-current-buffer (url-retrieve-synchronously url)
-    (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (slirm--first-match "<p>.*</p>"))))
+    (replace-regexp-in-string "<\/?[a-zA-Z]+>" "" (or (slirm--first-match "<p>.*</p>") ""))))
 
 ;; Slirm URL handlers.
 (defvar slirm--get-links-map nil)
