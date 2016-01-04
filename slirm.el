@@ -246,7 +246,7 @@
      (slirm--find-next-undecided))))
 
 (defun slirm-accept-or-reject ()
-  "Choose whether to accept or reject entry."
+  "Choose whether to accept or reject entry and continue to next undecided."
   (interactive)
   (if (yes-or-no-p "Accept current entry? ")
       (slirm-accept)
