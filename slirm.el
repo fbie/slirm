@@ -310,7 +310,7 @@
   (declare (indent 0))
   `(progn
      (setq inhibit-read-only t)
-     (progn ,@body)
+     ,@body
      (setq inhibit-read-only nil)))
 
 (define-derived-mode slirm-mode special-mode
