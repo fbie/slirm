@@ -191,7 +191,14 @@
   "Insert and format a paragraph with TITLE as header and TEXT as body."
   (insert (format "%s:\n\n" title))
   (insert text)
-  (fill-paragraph t)
+  (fill-paragraph t))
+
+(defun slirm--insert-line (title text)
+  "Insert text as TITLE: TEXT without further formatting."
+  (insert (format "%s: %s" title text)))
+
+(defun slirm--insert-newline ()
+  "Insert two visible newlines."
   (insert "\n\n\n"))
 
 (defun slirm--show (entry)
@@ -200,11 +207,16 @@
     (slirm--clear)
     (goto-char (point-min))
     (slirm--insert-paragraph "Title" (slirm--bibtex-get-field "title" entry))
+    (slirm--insert-newline)
     (slirm--insert-paragraph "Author(s)" (slirm--bibtex-get-field "author" entry))
-    (slirm--insert-paragraph "Year" (slirm--bibtex-get-field "year" entry))
+    (slirm--insert-newline)
+    (slirm--insert-line "Year" (slirm--bibtex-get-field "year" entry))
+    (slirm--insert-newline)
     (slirm--insert-paragraph "In" (or (slirm--bibtex-get-field "booktitle" entry)
 				      (slirm--bibtex-get-field "journal" entry)))
+    (slirm--insert-newline)
     (slirm--insert-paragraph "Abstract" (slirm--bibtex-get-field "abstract" entry))
+    (slirm--insert-newline)
     (slirm--insert-paragraph "Keywords" (slirm--bibtex-get-field "keywords" entry)))
   (goto-char (point-min)))
 
