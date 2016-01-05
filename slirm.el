@@ -207,7 +207,7 @@
 
 (defun slirm--insert-newline ()
   "Insert two visible newlines."
-  (insert "\n\n"))
+  (insert "\n"))
 
 (defun slirm--insert-indent (indent text)
   "Insert a line indented by INDENT spaces, containing TEXT."
