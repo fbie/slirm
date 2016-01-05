@@ -189,17 +189,22 @@
 
 (defun slirm--insert-paragraph (title text)
   "Insert and format a paragraph with TITLE as header and TEXT as body."
-  (insert (format "%s:\n\n" title))
-  (insert text)
-  (fill-paragraph t))
+  (insert (format "%s:\n\n%s" title text))
+  (fill-paragraph t)
+  (insert "\n"))
 
 (defun slirm--insert-line (title text)
   "Insert text as TITLE: TEXT without further formatting."
-  (insert (format "%s: %s" title text)))
+  (insert (format "%s: %s\n" title text)))
 
 (defun slirm--insert-newline ()
   "Insert two visible newlines."
-  (insert "\n\n\n"))
+  (insert "\n\n"))
+
+(defun slirm--insert-indent (indent text)
+  "Insert a line indented by INDENT spaces, containing TEXT."
+  (when text
+    (insert (format "%s%s" (make-string indent ? ) text))))
 
 (defun slirm--show (entry)
   "Show ENTRY in the review buffer."
@@ -217,7 +222,12 @@
     (slirm--insert-newline)
     (slirm--insert-paragraph "Abstract" (slirm--bibtex-get-field "abstract" entry))
     (slirm--insert-newline)
-    (slirm--insert-paragraph "Keywords" (slirm--bibtex-get-field "keywords" entry)))
+    (slirm--insert-paragraph "Keywords" (slirm--bibtex-get-field "keywords" entry))
+    (slirm--insert-newline)
+    (slirm--insert-line "Reviews" "\n")
+    (let ((reviews (split-string (or (slirm--bibtex-get-field "review" entry) "") ",")))
+      (dolist (review reviews)
+      	(slirm--insert-indent 2 (format "%s\n" (or review ""))))))
   (goto-char (point-min)))
 
 (defun slirm--update-and-show (entry)
