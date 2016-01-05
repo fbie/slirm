@@ -187,15 +187,23 @@
   "Clear current slirm buffer."
   (delete-region (point-min) (point-max)))
 
+(defun slirm--insert-title (title)
+  "Insert and format TITLE at point."
+  (let ((ttitle (format "%s:" title)))
+    (put-text-property 0 (length ttitle) 'face 'bold ttitle)
+    (insert ttitle)))
+
 (defun slirm--insert-paragraph (title text)
   "Insert and format a paragraph with TITLE as header and TEXT as body."
-  (insert (format "%s:\n\n%s" title text))
+  (slirm--insert-title title)
+  (insert (format " %s" text))
   (fill-paragraph t)
   (insert "\n"))
 
 (defun slirm--insert-line (title text)
   "Insert text as TITLE: TEXT without further formatting."
-  (insert (format "%s: %s\n" title text)))
+  (slirm--insert-title title)
+  (insert (format " %s\n" text)))
 
 (defun slirm--insert-newline ()
   "Insert two visible newlines."
