@@ -157,8 +157,7 @@
   "Update abstract and fullTextURL fields if they are empty."
   (interactive)
   (slirm--with-bibtex-buffer
-    (slirm--update-abstract-fullTextUrl (slirm--bibtex-reparse)))
-)
+    (slirm--update-abstract-fullTextUrl (slirm--bibtex-reparse))))
 
 ;; The main Slirm interaction functions.
 
