@@ -358,10 +358,5 @@
 (define-key slirm-mode-map (kbd "C-f") 'slirm-show-first-undecided)
 (define-key slirm-mode-map (kbd "SPC") 'slirm-accept-or-reject)
 
-(provide 'slirm-start)
-(provide 'slirm-show-next)
-(provide 'slirm-show-prev)
-(provide 'slirm-accept)
-(provide 'slirm-reject)
-(provide 'slirm-accept-or-reject)
+(provide 'slirm)
 ;;; slirm.el ends here
