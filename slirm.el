@@ -267,7 +267,10 @@
 
 (defun slirm--find-next-undecided ()
   "Return next undecided entry or the last entry in the list."
-  (slirm--find-next-entry (lambda (entry) (slirm--bibtex-get-field slirm--review entry))))
+  (slirm--find-next-entry (lambda (entry)
+			    (let ((review (slirm--bibtex-get-field slirm--review entry)))
+			      (when review
+				(string-match user-login-name review))))))
 
 (defun slirm-show-next-undecided ()
   "Show next undecided entry after current point."
