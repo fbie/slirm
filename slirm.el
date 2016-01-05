@@ -349,6 +349,7 @@
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
   (setq slirm--bibtex-file slirm--bibtex-file-tmp)
+  (bury-buffer (slirm--bibtex-buffer))
   (slirm-show-first-undecided))
 
 (define-key slirm-mode-map (kbd "n") 'slirm-show-next)
