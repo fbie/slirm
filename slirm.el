@@ -183,8 +183,8 @@
   (let ((reviews (slirm--bibtex-get-field slirm--review entry)))
     (when reviews
       (mapcar (lambda (s)
-		(split-string s ":[\s]*"))
-	      (split-string reviews ",[\s]*" t)))))
+		(split-string s ":\s+"))
+	      (split-string reviews ",\s+" t)))))
 
 (defun slirm--to-review-string (reviews)
   "Return REVIEWS as a nicely formatted string."
