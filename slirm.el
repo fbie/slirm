@@ -161,15 +161,42 @@
 
 ;; The main Slirm interaction functions.
 
-(defun slirm--mark-reviewed (entry review)
-  "Mark ENTRY as reviewed with REVIEW if not yet reviewed."
+(defun slirm--mark-reviewed (entry verdict)
+  "Mark ENTRY as reviewed with VERDICT."
   (slirm--bibtex-maybe-add-field slirm--review entry)
   (let* ((entry (slirm--bibtex-reparse))
-	 (contents (slirm--bibtex-get-field slirm--review entry)))
-    (if (and contents (string-match-p (regexp-quote user-login-name) contents))
-	(message "Already reviewed, nothing to do.")
-      (slirm--bibtex-write-to-field slirm--review (slirm--make-user-annotation review))
-      (message (format "Marked %s as %s." (slirm--bibtex-get-field "=key=" entry) review)))))
+	 (reviews (slirm--to-review-string (slirm--set-review (slirm--to-review-list entry) verdict))))
+    (slirm--bibtex-move-point-to-field slirm--review)
+    (let ((last-point (point)))
+      (when (re-search-forward "},\n" nil t) ;; Find and delete entire review field contents.
+	(delete-region last-point (match-beginning 0)) ;; TODO: Why does match-end work?
+	(slirm--bibtex-write-to-field slirm--review reviews)
+	(message (format "Marked %s as %s." (slirm--bibtex-get-field "=key=" entry) verdict))
+	))))
+
+(defun slirm--to-review-list (entry)
+  "Return reviews in ENTRY as a list of pairs."
+  (mapcar (lambda (s)
+	    (split-string s ":[\s]*"))
+	  (split-string (slirm--bibtex-get-field slirm--review entry) ",[\s]*" t)))
+
+(defun slirm--to-review-string (reviews)
+  "Return REVIEWS as a nicely formatted string."
+  (string-join
+   (mapcar (lambda (ss)
+	     (format "%s: %s" (car ss) (car (cdr ss))))
+	   reviews)
+   ", "))
+
+(defun slirm--set-review (reviews verdict)
+  "Set the current user's review in REVIEWS to VERDICT or append to the end of the list."
+  (if reviews
+      (let ((head (car reviews))
+	    (tail (cdr reviews)))
+	(if (eq (car head) user-login-name)
+	    (cons (list user-login-name verdict) tail)
+	  (cons head (slirm--set-review tail verdict))))
+    (list (list user-login-name verdict))))
 
 (defun slirm-accept ()
   "Mark current entry as accepted."
