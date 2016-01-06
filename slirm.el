@@ -194,15 +194,19 @@
 	   reviews)
    ", "))
 
+(defun slirm--format-verdict (verdict)
+  "Formats VERDICT as \"VERDICT <timestamp>\"."
+  (format "%s \<%s\>" verdict (format-time-string "%Y-%m-%d %T")))
+
 (defun slirm--set-review (reviews verdict)
   "Set the current user's review in REVIEWS to VERDICT or append to the end of the list."
   (if reviews
       (let ((head (car reviews))
 	    (tail (cdr reviews)))
-	(if (eq (car head) user-login-name) ;; Current first entry is of this user.
-	    (cons (list user-login-name verdict) tail) ;; Exchange it for new one.
-	  (cons head (slirm--set-review tail verdict)))) ;; Else keep and recurse.
-    (list (list user-login-name verdict))))
+	(if (string-equal (car head) user-login-name) ;; Current first entry is of this user.
+	    (cons (list user-login-name (slirm--format-verdict verdict)) tail) ;; Exchange it for new one.
+	  (cons head (slirm--set-review verdict tail)))) ;; Else keep and recurse.
+    (list (list user-login-name (slirm--format-verdict verdict)))))
 
 (defun slirm-accept ()
   "Mark current entry as accepted."
