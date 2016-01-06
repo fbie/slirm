@@ -199,9 +199,9 @@
   (if reviews
       (let ((head (car reviews))
 	    (tail (cdr reviews)))
-	(if (eq (car head) user-login-name)
-	    (cons (list user-login-name verdict) tail)
-	  (cons head (slirm--set-review tail verdict))))
+	(if (eq (car head) user-login-name) ;; Current first entry is of this user.
+	    (cons (list user-login-name verdict) tail) ;; Exchange it for new one.
+	  (cons head (slirm--set-review tail verdict)))) ;; Else keep and recurse.
     (list (list user-login-name verdict))))
 
 (defun slirm-accept ()
