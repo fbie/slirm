@@ -260,9 +260,9 @@
     (slirm--insert-paragraph "Keywords" (slirm--bibtex-get-field "keywords" entry))
     (slirm--insert-newline)
     (slirm--insert-line "Reviews" "\n")
-    (let ((reviews (split-string (or (slirm--bibtex-get-field "review" entry) "") ",")))
+    (let ((reviews (slirm--to-review-list entry)))
       (dolist (review reviews)
-      	(slirm--insert-indent 2 (format "%s\n" (or review ""))))))
+      	(slirm--insert-indent 2 (format "%s: %s\n" (car review ) (nth 1 review))))))
   (goto-char (point-min)))
 
 (defun slirm--update-and-show (entry)
