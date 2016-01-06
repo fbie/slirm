@@ -165,20 +165,26 @@
   "Mark ENTRY as reviewed with VERDICT."
   (slirm--bibtex-maybe-add-field slirm--review entry)
   (let* ((entry (slirm--bibtex-reparse))
-	 (reviews (slirm--to-review-string (slirm--set-review (slirm--to-review-list entry) verdict))))
+	 (reviews (slirm--to-review-string (slirm--set-review
+					    (slirm--to-review-list entry)
+					    verdict))))
     (slirm--bibtex-move-point-to-field slirm--review)
     (let ((last-point (point)))
-      (when (re-search-forward "},\n" nil t) ;; Find and delete entire review field contents.
-	(delete-region last-point (match-beginning 0)) ;; TODO: Why does match-end work?
+      (when (re-search-forward "},\n" nil t) ;; Find and delete review field content.
+	(delete-region last-point (match-beginning 0))
 	(slirm--bibtex-write-to-field slirm--review reviews)
-	(message (format "Marked %s as %s." (slirm--bibtex-get-field "=key=" entry) verdict))
-	))))
+	(message (format
+		  "Marked %s as %s."
+		  (slirm--bibtex-get-field "=key=" entry)
+		  verdict))))))
 
 (defun slirm--to-review-list (entry)
   "Return reviews in ENTRY as a list of pairs."
-  (mapcar (lambda (s)
-	    (split-string s ":[\s]*"))
-	  (split-string (slirm--bibtex-get-field slirm--review entry) ",[\s]*" t)))
+  (let ((reviews (slirm--bibtex-get-field slirm--review entry)))
+    (when reviews
+      (mapcar (lambda (s)
+		(split-string s ":[\s]*"))
+	      (split-string reviews ",[\s]*" t)))))
 
 (defun slirm--to-review-string (reviews)
   "Return REVIEWS as a nicely formatted string."
