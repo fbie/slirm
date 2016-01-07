@@ -65,9 +65,8 @@
 (defun slirm--bibtex-get-field (field entry)
   "Nil if FIELD is not present in ENTRY, otherwise the associated value."
   (let ((val (assoc field entry)))
-    (if val
-	(cdr val)
-      nil)))
+    (when val
+	(cdr val))))
 
 (defun slirm--bibtex-add-field (field)
   "Add a field FIELD to the entry."
@@ -117,9 +116,8 @@
 
 (defun slirm--acm-make-dl-link (link)
   "Build ACM link address from LINK."
-  (if link
-      (format "http://dl.acm.org/%s" link)
-    nil))
+  (when link
+      (format "http://dl.acm.org/%s" link)))
 
 (defun slirm--acm-get-links (acm-url)
   "Retrieves the links to the abstract and the full-text by retrieving ACM-URL."
