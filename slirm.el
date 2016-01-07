@@ -367,10 +367,8 @@
 
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
-  (let ((bibtex-buffer (save-current-buffer
-			 (find-file slirm--bibtex-file))))
-    (switch-to-buffer (current-buffer))
-    bibtex-buffer))
+  (save-window-excursion
+    (find-file slirm--bibtex-file)))
 
 (defun slirm-start ()
   "Start a systematic literature review of the BibTeX file in the current buffer."
