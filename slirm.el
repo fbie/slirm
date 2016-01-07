@@ -193,14 +193,14 @@
 					    (slirm--to-review-list entry)
 					    verdict))))
     (slirm--bibtex-move-point-to-field slirm--review)
-    (let ((last-point (point)))
-      (when (re-search-forward "},\n" nil t) ;; Find and delete review field content.
-	(delete-region last-point (match-beginning 0))
-	(slirm--bibtex-write-to-field slirm--review reviews)
-	(message (format
-		  "Marked %s as %s."
-		  (slirm--bibtex-get-field "=key=" entry)
-		  verdict))))))
+    (when (save-excursion
+	    (re-search-forward "},\n" nil t)) ;; Find and delete review field content.
+      (delete-region (point) (match-beginning 0))
+      (slirm--bibtex-write-to-field slirm--review reviews)
+      (message (format
+		"Marked %s as %s."
+		(slirm--bibtex-get-field "=key=" entry)
+		verdict)))))
 
 (defun slirm--to-review-list (entry)
   "Return reviews in ENTRY as a list of pairs."
