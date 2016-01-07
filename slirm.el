@@ -35,10 +35,9 @@
 
 (defun slirm--bibtex-move-point-to-entry (direction)
   "Move point to the next entry in DIRECTION, which is one of slirm--{next, prev}."
-  (if (not (funcall direction "^@[a-zA-Z0-9]+{" nil t))
-      nil
-    (goto-char (match-beginning 0))
-    t))
+  (when (save-excursion
+	  (funcall direction "^@[a-zA-Z0-9]+{" nil t))
+    (goto-char (match-beginning 0))))
 
 (defun slirm--bibtex-parse-next ()
   "Convenience function to parse next entry."
@@ -59,7 +58,8 @@
 
 (defun slirm--bibtex-move-point-to-field (field)
   "Move point to start of FIELD's text."
-  (when (re-search-backward (format "\s*%s\s*=[\s\t]*{" field) nil t)
+  (when (save-excursion
+	  (re-search-backward (format "\s*%s\s*=[\s\t]*{" field) nil t))
     (goto-char (match-end 0))))
 
 (defun slirm--bibtex-get-field (field entry)
