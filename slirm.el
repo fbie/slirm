@@ -174,7 +174,7 @@
   (let ((getter (slirm--lookup slirm--get-abstract-map (slirm--get-base-url url))))
     (funcall getter url)))
 
-(defun slirm--update-abstract-fullTextUrl (entry)
+(defun slirm--update-abstract-full-text-url (entry)
   "Update abstract and fullTextURL fields if they are empty in ENTRY."
   (when (not (and ;; Any of the two fields is empty.
 	      (slirm--bibtex-get-field slirm--abstract entry)
@@ -310,7 +310,7 @@
   "Show ENTRY in the review buffer after update."
   (slirm--show
    (slirm--with-bibtex-buffer
-     (slirm--update-abstract-fullTextUrl entry)
+     (slirm--update-abstract-full-text-url entry)
      (slirm--bibtex-reparse))))
 
 (defun slirm-show-next ()
