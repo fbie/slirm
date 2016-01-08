@@ -268,18 +268,22 @@ can be found."
 
 (defun slirm--insert-paragraph (title text)
   "Insert and format a paragraph with TITLE as header and TEXT as body."
-  (slirm--insert-title title)
-  (insert (format " %s" text))
-  (fill-paragraph t)
-  (insert "\n"))
+  (when text
+    (slirm--insert-title title)
+    (insert (format " %s" text))
+    (fill-paragraph t)
+    (slirm--insert-newline)
+    (slirm--insert-newline)))
 
 (defun slirm--insert-line (title text)
   "Insert text as TITLE: TEXT without further formatting."
   (slirm--insert-title title)
-  (insert (format " %s\n" text)))
+  (insert (format " %s" text))
+  (slirm--insert-newline)
+  (slirm--insert-newline))
 
 (defun slirm--insert-newline ()
-  "Insert two visible newlines."
+  "Insert a newlines."
   (insert "\n"))
 
 (defun slirm--insert-indent (indent text)
@@ -293,22 +297,19 @@ can be found."
     (slirm--clear)
     (save-excursion
       (slirm--insert-paragraph "Title" (slirm--bibtex-get-field "title" entry))
-      (slirm--insert-newline)
       (slirm--insert-paragraph "Author(s)" (slirm--bibtex-get-field "author" entry))
-      (slirm--insert-newline)
       (slirm--insert-line "Year" (slirm--bibtex-get-field "year" entry))
-      (slirm--insert-newline)
       (slirm--insert-paragraph "In" (or (slirm--bibtex-get-field "booktitle" entry)
 					(slirm--bibtex-get-field "journal" entry)))
-      (slirm--insert-newline)
       (slirm--insert-paragraph "Abstract" (slirm--bibtex-get-field "abstract" entry))
-      (slirm--insert-newline)
       (slirm--insert-paragraph "Keywords" (slirm--bibtex-get-field "keywords" entry))
-      (slirm--insert-newline)
-      (slirm--insert-line "Reviews" "\n")
       (let ((reviews (slirm--to-review-list entry)))
-	(dolist (review reviews)
-	  (slirm--insert-indent 2 (format "%s: %s\n" (car review ) (nth 1 review))))))))
+	(when reviews
+	  (slirm--insert-line "Reviews" "")
+	  (dolist (review reviews)
+	    (slirm--insert-indent 2 (format "%s: %s\n" (car review ) (nth 1 review))))
+	  (slirm--insert-newline)))
+      (slirm--insert-paragraph "Notes" (slirm--bibtex-get-field "notes" entry)))))
 
 (defun slirm--update-and-show (entry)
   "Show ENTRY in the review buffer after update."
