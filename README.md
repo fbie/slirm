@@ -53,3 +53,4 @@ link similarly to this:
 - [x] Edit annotations.
 - [ ] Extend navigation to next/previous/first accepted/rejected entry.
 - [ ] Add options for auto-commit with Magit.
+- [ ] Run ```M-x slirm-start``` with filename as parameter.
