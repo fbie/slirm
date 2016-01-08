@@ -30,6 +30,7 @@ Further navigation consists of:
 - ```p```: Previous entry
 - ```C-n```: Next not yet reviewed entry
 - ```C-f```: First not yet reviewed entry
+- ```C-c C-t```: Show full text PDF. This might download the file and cache it locally.
 
 ## Extending URL Handlers ##
 
@@ -46,7 +47,7 @@ link similarly to this:
 
 ## TODOs ##
 
-- [ ] Download and cache full text PDF.
+- [x] Download and cache full text PDF.
 - [ ] Export accepted entries to new file.
 - [ ] Default handlers for unknown base URLs to prevent crashing.
 - [ ] Edit annotations.
