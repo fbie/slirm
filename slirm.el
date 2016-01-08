@@ -105,6 +105,13 @@
   (when (and content (slirm--bibtex-maybe-add-field field entry))
     (slirm--bibtex-write-to-field field content)))
 
+(defun slirm--bibtex-kill-field (field)
+  "Delete and return FIELD from current entry."
+  (slirm--bibtex-move-point-to-field field)
+  (when (save-excursion
+	    (re-search-forward "},\n" nil t))
+      (delete-region (point) (match-beginning 0))))
+
 (defun slirm--make-user-annotation (annotation)
   "Make a string of the form \"user-login-name: ANNOTATION\"."
   (format "%s: %s," user-login-name annotation))
@@ -200,15 +207,12 @@ can be found."
 	 (reviews (slirm--to-review-string (slirm--set-review
 					    (slirm--to-review-list entry)
 					    verdict))))
-    (slirm--bibtex-move-point-to-field slirm--review)
-    (when (save-excursion
-	    (re-search-forward "},\n" nil t)) ;; Find and delete review field content.
-      (delete-region (point) (match-beginning 0))
-      (slirm--bibtex-write-to-field slirm--review reviews)
-      (message (format
-		"Marked %s as %s."
-		(slirm--bibtex-get-field "=key=" entry)
-		verdict)))))
+    (slirm--bibtex-kill-field slirm--review) ;; Find and delete review field content.
+    (slirm--bibtex-write-to-field slirm--review reviews)
+    (message (format
+	      "Marked %s as %s."
+	      (slirm--bibtex-get-field "=key=" entry)
+	      verdict))))
 
 (defun slirm--to-review-list (entry)
   "Return reviews in ENTRY as a list of pairs."
