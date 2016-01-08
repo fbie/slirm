@@ -422,6 +422,21 @@ always stored in .slirm-cache/."
 			 (find-file (slirm--make-absolute file))))
       (message "Cannot download, current entry has no full text URL."))))
 
+(defun slirm-edit-notes ()
+  "Edit the notes field of the current entry."
+  (interactive)
+  (let* ((entry (slirm--with-bibtex-buffer
+		  (slirm--bibtex-reparse)))
+	 (notes-old (slirm--bibtex-get-field "notes" entry))
+	 (notes-new (read-string "Edit notes: " notes-old)))
+    (slirm--with-bibtex-buffer
+      (if notes-old
+	  (slirm--bibtex-kill-field "notes")
+	(slirm--bibtex-add-field "notes"))
+      (slirm--bibtex-write-to-field "notes" notes-new))
+    (slirm--show (slirm--with-bibtex-buffer
+		   (slirm--bibtex-reparse)))))
+
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
   (save-window-excursion
@@ -483,6 +498,7 @@ always stored in .slirm-cache/."
 (define-key slirm-mode-map (kbd "C-f") 'slirm-show-first-undecided)
 (define-key slirm-mode-map (kbd "SPC") 'slirm-accept-or-reject)
 (define-key slirm-mode-map (kbd "C-c C-t") 'slirm-show-full-text)
+(define-key slirm-mode-map (kbd "C-c C-n") 'slirm-edit-notes)
 
 (provide 'slirm)
 ;;; slirm.el ends here
