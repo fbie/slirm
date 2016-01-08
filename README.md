@@ -49,7 +49,7 @@ link similarly to this:
 
 - [x] Download and cache full text PDF.
 - [ ] Export accepted entries to new file.
-- [ ] Default handlers for unknown base URLs to prevent crashing.
+- [x] Default handlers for unknown base URLs to prevent crashing.
 - [ ] Edit annotations.
 - [ ] Extend navigation to next/previous/first accepted/rejected entry.
 - [ ] Add options for auto-commit with Magit.
