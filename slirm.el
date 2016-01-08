@@ -164,15 +164,21 @@
   (let ((es (reverse (split-string (match-string 0 url) "\\."))))
     (format "%s.%s" (car (cdr es)) (car es))))
 
+(defun slirm--get-remote (url getters)
+  "Get something from a remote URL using the corresponding getter.
+Getter is listed in GETTERS.  Returns nil if no adequate getter
+can be found."
+  (let ((getter (slirm--lookup getters (slirm--get-base-url url))))
+    (when getter
+      (funcall getter url))))
+
 (defun slirm--get-links (url)
   "Get links from URL."
-  (let ((getter (slirm--lookup slirm--get-links-map (slirm--get-base-url url))))
-    (funcall getter url)))
+  (slirm--get-remote url slirm--get-links-map))
 
 (defun slirm--get-abstract (url)
   "Get abstract from URL."
-  (let ((getter (slirm--lookup slirm--get-abstract-map (slirm--get-base-url url))))
-    (funcall getter url)))
+  (slirm--get-remote url slirm--get-abstract-map))
 
 (defun slirm--update-abstract-full-text-url (entry)
   "Update abstract and fullTextURL fields if they are empty in ENTRY."
