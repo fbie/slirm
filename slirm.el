@@ -185,12 +185,6 @@
       (slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls)))
       (save-buffer))))
 
-(defun slirm-update-abstract-fullTextUrl ()
-  "Update abstract and fullTextURL fields if they are empty."
-  (interactive)
-  (slirm--with-bibtex-buffer
-    (slirm--update-abstract-fullTextUrl (slirm--bibtex-reparse))))
-
 ;; The main Slirm interaction functions.
 
 (defun slirm--mark-reviewed (entry verdict)
