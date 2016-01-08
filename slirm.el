@@ -478,6 +478,7 @@ always stored in .slirm-cache/."
 (define-key slirm-mode-map (kbd "p") 'slirm-show-prev)
 (define-key slirm-mode-map (kbd "C-f") 'slirm-show-first-undecided)
 (define-key slirm-mode-map (kbd "SPC") 'slirm-accept-or-reject)
+(define-key slirm-mode-map (kbd "C-c C-t") 'slirm-show-full-text)
 
 (provide 'slirm)
 ;;; slirm.el ends here
