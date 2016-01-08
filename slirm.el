@@ -33,6 +33,22 @@
 (defconst slirm--next 're-search-forward)
 (defconst slirm--prev 're-search-backward)
 
+;; Mode hook.
+(defvar slirm-mode-hook nil)
+
+;; Local variables for keeping track of the corresponding BibTeX file
+;; and the corresponding point.
+(defvar slirm--bibtex-file-tmp "" "The name of the BibTeX file, temporarily.")
+(defvar-local slirm--bibtex-file "" "The name of the BibTeX file.")
+(defvar-local slirm--point 0 "Slirm's point in the BibTeX file.")
+
+(defconst slirm--review "review" "The review field name.")
+(defconst slirm--accept "accepted")
+(defconst slirm--reject "rejected")
+(defconst slirm--abstract "abstract" "The abstract field name.")
+(defconst slirm--full-text-url "fullTextUrl" "The fullTextUrl field name.")
+(defconst slirm--full-text-file "fullTextFile" "The fullTextFile field name.")
+
 (defun slirm--bibtex-move-point-to-entry (direction)
   "Move point to the next entry in DIRECTION, which is one of slirm--{next, prev}."
   (when (save-excursion
@@ -88,12 +104,6 @@
   "Write to FIELD if ENTRY does not contain it.  CONTENT is what is written if non-nil."
   (when (and content (slirm--bibtex-maybe-add-field field entry))
     (slirm--bibtex-write-to-field field content)))
-
-(defconst slirm--review "review" "The review field name.")
-(defconst slirm--accept "accepted")
-(defconst slirm--reject "rejected")
-(defconst slirm--abstract "abstract" "The abstract field name.")
-(defconst slirm--full-text-url "fullTextUrl" "The fullTextUrl field name.")
 
 (defun slirm--make-user-annotation (annotation)
   "Make a string of the form \"user-login-name: ANNOTATION\"."
@@ -353,14 +363,56 @@
     (slirm-reject))
   (slirm-show-next-undecided))
 
-;; Mode hook.
-(defvar slirm-mode-hook nil)
+(defun slirm--make-relative (path)
+  "Make PATH relative to BibTeX file directory."
+  (file-relative-name (file-name-directory slirm--bibtex-file) path))
 
-;; Local variables for keeping track of the corresponding BibTeX file
-;; and the corresponding point.
-(defvar slirm--bibtex-file-tmp "" "The name of the BibTeX file, temporarily.")
-(defvar-local slirm--bibtex-file "" "The name of the BibTeX file.")
-(defvar-local slirm--point 0 "Slirm's point in the BibTeX file.")
+(defun slirm--make-absolute (path)
+  "Make PATH absolute."
+  (if (file-name-absolute-p path)
+      path
+    (concat (file-name-directory slirm--bibtex-file) path)))
+
+(defun slirm--gen-filename (entry)
+  "Generate a file name for ENTRY's full text file."
+  (format "%s_%s_%s.pdf"
+	  (car (split-string (slirm--bibtex-get-field "author" entry) ",\s*"))
+	  (slirm--bibtex-get-field "year" entry)
+	  (car (split-string (slirm--bibtex-get-field "title" entry) "[^a-zA-Z0-9]"))))
+
+(defun slirm--filepath (file)
+  "Return the full file path for FILE."
+  (concat
+   (file-name-as-directory ".slirm_cache")
+   (directory-file-name file)))
+
+(defun slirm--download-full-text (entry)
+  "Download the full text for ENTRY if possible, cache it and return its relative filename."
+  (let* ((filepath-rel (slirm--filepath (slirm--gen-filename entry)))
+	 (filepath-abs (slirm--make-absolute filepath-rel))
+	 (dir (file-name-directory filepath-abs))
+	 (url (slirm--bibtex-get-field slirm--full-text-url entry)))
+    (when url
+      (unless (file-exists-p dir)
+	(dired-create-directory dir))
+      (when (url-copy-file url filepath-abs)
+	(slirm--with-bibtex-buffer
+	  (slirm--bibtex-maybe-write-to-field slirm--full-text-file entry filepath-rel)
+	  (save-buffer))
+	filepath-rel))))
+
+(defun slirm-show-full-text ()
+  "Show full text if cached, try downloading otherwise."
+  (interactive)
+  (let* ((entry (slirm--with-bibtex-buffer
+		  (slirm--bibtex-reparse)))
+	 (file (or
+		(slirm--bibtex-get-field slirm--full-text-file entry)
+		(slirm--download-full-text entry))))
+    (if file
+      (pop-to-buffer (save-window-excursion
+		       (find-file (slirm--make-absolute file))))
+      (message "Cannot download, current entry has no full text URL."))))
 
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
