@@ -386,32 +386,36 @@
    (file-name-as-directory ".slirm_cache")
    (directory-file-name file)))
 
-(defun slirm--download-full-text (entry)
-  "Download the full text for ENTRY if possible, cache it and return its relative filename."
-  (let* ((filepath-rel (slirm--filepath (slirm--gen-filename entry)))
-	 (filepath-abs (slirm--make-absolute filepath-rel))
+(defun slirm--download-full-text (entry filepath)
+  "Download the full text for ENTRY if possible.
+The full text is stored in FILEPATH if non-nil, otherwise a
+filename is generated based on the entry.  Generated files are
+always stored in .slirm-cache/."
+  (unless filepath
+    (setq filepath (slirm--filepath (slirm--gen-filename entry))))
+  (let* ((filepath-abs (slirm--make-absolute filepath))
 	 (dir (file-name-directory filepath-abs))
 	 (url (slirm--bibtex-get-field slirm--full-text-url entry)))
     (when url
       (unless (file-exists-p dir)
 	(dired-create-directory dir))
-      (when (url-copy-file url filepath-abs)
+      (when (or (file-exists-p filepath-abs) (url-copy-file url filepath-abs))
 	(slirm--with-bibtex-buffer
-	  (slirm--bibtex-maybe-write-to-field slirm--full-text-file entry filepath-rel)
+	  (slirm--bibtex-maybe-write-to-field slirm--full-text-file entry filepath)
 	  (save-buffer))
-	filepath-rel))))
+	filepath))))
 
 (defun slirm-show-full-text ()
   "Show full text if cached, try downloading otherwise."
   (interactive)
   (let* ((entry (slirm--with-bibtex-buffer
 		  (slirm--bibtex-reparse)))
-	 (file (or
-		(slirm--bibtex-get-field slirm--full-text-file entry)
-		(slirm--download-full-text entry))))
+	 (file (slirm--bibtex-get-field slirm--full-text-file entry)))
+    (unless (and file (file-exists-p (slirm--make-absolute file)))
+      (setq file (slirm--download-full-text entry file)))
     (if file
-      (pop-to-buffer (save-window-excursion
-		       (find-file (slirm--make-absolute file))))
+	(pop-to-buffer (save-window-excursion
+			 (find-file (slirm--make-absolute file))))
       (message "Cannot download, current entry has no full text URL."))))
 
 (defun slirm--bibtex-buffer ()
