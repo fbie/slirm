@@ -27,6 +27,7 @@
 ;;; Code:
 
 (require 'bibtex)
+(require 'subr-x)
 
 ;;; BibTeX utility functions for moving point from entry to entry and
 ;;; to access fields conveniently.
