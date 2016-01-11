@@ -224,7 +224,7 @@ can be found."
 
 (defun slirm--to-review-string (reviews)
   "Return REVIEWS as a nicely formatted string."
-  (string-join
+  (concat
    (mapcar (lambda (ss)
 	     (format "%s: %s" (car ss) (car (cdr ss))))
 	   reviews)
