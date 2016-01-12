@@ -183,11 +183,13 @@ can be found."
 
 (defun slirm--get-links (url)
   "Get links from URL."
-  (slirm--get-remote url slirm--get-links-map))
+  (when url
+    (slirm--get-remote url slirm--get-links-map)))
 
 (defun slirm--get-abstract (url)
   "Get abstract from URL."
-  (slirm--get-remote url slirm--get-abstract-map))
+  (when url
+    (slirm--get-remote url slirm--get-abstract-map)))
 
 (defun slirm--update-abstract-full-text-url (entry)
   "Update abstract and fullTextURL fields if they are empty in ENTRY."
@@ -196,9 +198,10 @@ can be found."
 	      (slirm--bibtex-get-field slirm--full-text-url entry)))
     (let* ((url (slirm--bibtex-get-field "url" entry))
 	   (urls (slirm--get-links url))) ;; Download from the article's website.
-      (slirm--bibtex-maybe-write-to-field slirm--abstract entry (slirm--get-abstract (car urls)))
-      (slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls)))
-      (save-buffer))))
+      (when urls
+	(slirm--bibtex-maybe-write-to-field slirm--abstract entry (slirm--get-abstract (car urls)))
+	(slirm--bibtex-maybe-write-to-field slirm--full-text-url entry (car (cdr urls)))
+	(save-buffer)))))
 
 ;; The main Slirm interaction functions.
 
