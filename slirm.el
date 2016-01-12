@@ -275,7 +275,7 @@ can be found."
   "Insert and format a paragraph with TITLE as header and TEXT as body."
   (when text
     (slirm--insert-title title)
-    (insert (format " %s" text))
+    (insert (format " %s" (replace-regexp-in-string "[\s\t\n\r]+" " " text)))
     (fill-paragraph t)
     (slirm--insert-newline)
     (slirm--insert-newline)))
