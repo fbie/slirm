@@ -1,7 +1,5 @@
 ;;; slirm.el -- Systematic Literature Review Mode for Emacs.
 
-;;; Commentary:
-;;;
 ;;; Copyright (c) 2016, Florian Biermann fbie@itu.dk
 ;;;
 ;;; Permission is hereby granted, free of charge, to any person
@@ -23,6 +21,9 @@
 ;;; WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ;;; DEALINGS IN THE SOFTWARE.
+
+;;; Commentary:
+;;; Convenient browsing of BibTeX files for annotating single entries.
 
 ;;; Code:
 
