@@ -31,6 +31,8 @@ Further navigation consists of:
 - ```C-n```: Next not yet reviewed entry
 - ```C-f```: First not yet reviewed entry
 - ```C-c C-t```: Show full text PDF. This might download the file and cache it locally.
+- ```C-c C-n```: Edit notes in the mini-buffer.
+- ```C-c C-u```: Browse to the current entry's URL.
 
 ## Extending URL Handlers ##
 
