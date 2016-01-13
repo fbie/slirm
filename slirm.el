@@ -387,10 +387,10 @@ can be found."
 
 (defun slirm--gen-filename (entry)
   "Generate a file name for ENTRY's full text file."
-  (format "%s_%s_%s.pdf"
-	  (car (split-string (slirm--bibtex-get-field "author" entry) ",\s*"))
-	  (slirm--bibtex-get-field "year" entry)
-	  (car (split-string (slirm--bibtex-get-field "title" entry) "[^a-zA-Z0-9]"))))
+  (let ((author (car (split-string (slirm--bibtex-get-field "author" entry) ",\s*")))
+	(year (slirm--bibtex-get-field "year" entry))
+	(title-elems (split-string (slirm--bibtex-get-field "title" entry) "[^a-zA-Z0-9]")))
+    (format "%s_%s_%s-%s.pdf" author year (nth 0 title-elems) (nth 1 title-elems))))
 
 (defun slirm--filepath (file)
   "Return the full file path for FILE."
