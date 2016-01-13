@@ -303,6 +303,7 @@ can be found."
     (save-excursion
       (slirm--insert-paragraph "Title" (slirm--bibtex-get-field "title" entry))
       (slirm--insert-paragraph "Author(s)" (slirm--bibtex-get-field "author" entry))
+      (slirm--insert-paragraph "Editor(s)" (slirm--bibtex-get-field "editor" entry))
       (slirm--insert-line "Year" (slirm--bibtex-get-field "year" entry))
       (slirm--insert-paragraph "In" (or (slirm--bibtex-get-field "booktitle" entry)
 					(slirm--bibtex-get-field "journal" entry)))
