@@ -445,6 +445,17 @@ always stored in .slirm-cache/."
     (slirm--show (slirm--with-bibtex-buffer
 		   (slirm--bibtex-reparse)))))
 
+(require 'browse-url)
+
+(defun slirm-browse-url ()
+  "Open the current publication's url in a browser."
+  (interactive)
+  (let* ((entry (slirm--with-bibtex-buffer (slirm--bibtex-reparse)))
+	 (url (slirm--bibtex-get-field "url" entry)))
+    (if url
+	(browse-url-default-browser url)
+      (message "Current entry has no URL, cannot open it."))))
+
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
   (save-window-excursion
@@ -507,6 +518,7 @@ always stored in .slirm-cache/."
 (define-key slirm-mode-map (kbd "SPC") 'slirm-accept-or-reject)
 (define-key slirm-mode-map (kbd "C-c C-t") 'slirm-show-full-text)
 (define-key slirm-mode-map (kbd "C-c C-n") 'slirm-edit-notes)
+(define-key slirm-mode-map (kbd "C-c C-u") 'slirm-browse-url)
 
 (provide 'slirm)
 ;;; slirm.el ends here
