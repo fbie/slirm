@@ -120,9 +120,10 @@
 
 (defun slirm--first-match (regex)
   "Return the first string matching REGEX in the entire buffer."
-  (goto-char (point-min))
-  (when (re-search-forward regex nil t)
-    (match-string 0)))
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward regex nil t)
+      (match-string 0))))
 
 ;;; ACM utility functions to download full-text and abstract.
 (defun slirm--acm-get-full-text-link ()
