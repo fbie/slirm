@@ -308,6 +308,7 @@ can be found."
       (slirm--insert-paragraph "In" (or (slirm--bibtex-get-field "booktitle" entry)
 					(slirm--bibtex-get-field "journal" entry)))
       (slirm--insert-paragraph "Abstract" (slirm--bibtex-get-field "abstract" entry))
+      (slirm--insert-paragraph "Source" (slirm--bibtex-get-field "source" entry))
       (slirm--insert-paragraph "Keywords" (slirm--bibtex-get-field "keywords" entry))
       (let ((reviews (slirm--to-review-list entry)))
 	(when reviews
