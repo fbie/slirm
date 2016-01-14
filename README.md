@@ -50,7 +50,7 @@ link similarly to this:
 ## TODOs ##
 
 - [x] Download and cache full text PDF.
-- [ ] Export accepted entries to new file.
+- [x] Export accepted entries to new file.
 - [x] Default handlers for unknown base URLs to prevent crashing.
 - [x] Edit annotations.
 - [ ] Extend navigation to next/previous/first accepted/rejected entry.
