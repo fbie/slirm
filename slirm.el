@@ -69,6 +69,10 @@
   (slirm--bibtex-move-point-to-entry slirm--prev)
   (bibtex-parse-entry t))
 
+(defun slirm--bibtex-parse ()
+  "Parse current entry."
+  (bibtex-parse-entry t))
+
 (defun slirm--bibtex-reparse ()
   "Re-parse an entry, useful after modifications and so on."
   (slirm--bibtex-move-point-to-entry slirm--prev)
@@ -540,6 +544,22 @@ always stored in .slirm-cache/."
 	(browse-url-default-browser url)
       (message "Current entry has no URL, cannot open it."))))
 
+(defun slirm-count-entries ()
+  "Count entries and display in minibuffer."
+  (interactive)
+  (let ((seen nil)
+	(all 0)
+	(unique 0))
+    (slirm--for-all-entries-do
+      (let* ((entry (slirm--bibtex-parse))
+	     (key (split-string (slirm--bibtex-get-field "=key=" entry) ":"))
+	     (id (format "%s:%s:%s" (nth 0 key) (nth 1 key) (nth 2 key))))
+	(unless (member id seen)
+	  (setq seen (cons id seen)
+		unique (1+ unique)))
+	(setq all (1+ all))
+	(message (format "Counting %d entries of which %d unique." all unique))))))
+
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
   (save-window-excursion
@@ -588,6 +608,16 @@ always stored in .slirm-cache/."
      (setq inhibit-read-only t)
      ,@body
      (setq inhibit-read-only nil)))
+
+(defmacro slirm--for-all-entries-do (&rest body)
+  "Execute BODY once for each entry."
+  (declare (indent 0))
+  `(slirm--with-bibtex-buffer
+     (save-excursion
+       (goto-char (point-min))
+       (while (slirm--bibtex-move-point-to-entry slirm--next)
+	 (progn
+	   ,@body)))))
 
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
