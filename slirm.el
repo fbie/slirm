@@ -249,9 +249,10 @@
   (with-current-buffer (url-retrieve-synchronously url)
     (let ((response (slirm--first-match "<div .*>.*"))
 	  (abstract (buffer-substring (match-beginning 0) (point-max))))
-      (slirm--replace-html-chars
-       (string-trim
-	(replace-regexp-in-string "<[^>]*>" "" abstract))))))
+      (replace-regexp-in-string "%" "\\%"
+				(slirm--replace-html-chars
+				 (string-trim
+				  (replace-regexp-in-string "<[^>]*>" "" abstract)))))))
 
 ;; Slirm URL handlers.
 (defvar slirm--get-links-map nil)
