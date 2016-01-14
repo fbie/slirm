@@ -118,6 +118,21 @@
 	    (re-search-forward "},\n" nil t))
       (delete-region (point) (match-beginning 0))))
 
+(defun slirm--bibtex-write (entry)
+  "Write ENTRY to current buffer."
+  (insert (format "@%s{%s,\n}\n\n"
+		  (slirm--bibtex-get-field "=type=" entry)
+		  (slirm--bibtex-get-field "=key=" entry)))
+  (slirm--bibtex-move-point-to-entry slirm--prev)
+  (dolist (field entry)
+    (let ((key (car field))
+	  (val (cdr field)))
+      (unless (or (string-equal key "=type=") (string-equal key "=key="))
+	(slirm--bibtex-add-field key)
+	(slirm--bibtex-write-to-field key val))))
+  (bibtex-end-of-entry)
+  (goto-char (1+ (point))))
+
 (defun slirm--make-user-annotation (annotation)
   "Make a string of the form \"user-login-name: ANNOTATION\"."
   (format "%s: %s," user-login-name annotation))
@@ -559,6 +574,46 @@ always stored in .slirm-cache/."
 		unique (1+ unique)))
 	(setq all (1+ all))
 	(message (format "Counting %d entries of which %d unique." all unique))))))
+
+(defun slirm--find-entries (predicate)
+  "Find all entries for which PREDICATE holds."
+  (let ((entries nil))
+    (slirm--for-all-entries-do
+      (let ((entry (slirm--bibtex-parse)))
+	(when (funcall predicate entry)
+	  (setq entries (cons entry entries)))))
+    entries))
+
+(defun count-if (lst predicate)
+  "Count the number of items in LST that satisfy PREDICATE."
+  (if lst
+      (let ((head (car lst))
+	    (tail (cdr lst)))
+	(if (funcall predicate head)
+	    (1+ (count-if tail predicate))
+	  (count-if tail predicate)))
+    0))
+
+(defun slirm--count-positive-reviews (entry)
+  "Count the number of positive reviews of ENTRY."
+  (let ((reviews (slirm--to-review-list entry)))
+    (count-if reviews
+	      (lambda (review)
+		(string-match slirm--accept (nth 1 review))))))
+
+(defun slirm-export-accepted ()
+  "Export all accepted entries.  Promts for a minimum number of positive reviews."
+  (interactive)
+  (let* ((min-reviews (read-number "Mimimun number of positive reviews: " 1))
+	 (predicate (lambda (entry) (<= min-reviews (slirm--count-positive-reviews entry))))
+	 (entries (slirm--find-entries predicate))
+	 (filename (format "%s-accepted.bib" (file-name-sans-extension (file-name-base slirm--bibtex-file)))))
+    (with-current-buffer (get-buffer-create (read-string "Export to file: " (slirm--make-absolute filename)))
+      (save-excursion
+	(dolist (entry entries)
+	  (slirm--bibtex-write entry)))
+      (bibtex-mode)
+      (pop-to-buffer (current-buffer)))))
 
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
