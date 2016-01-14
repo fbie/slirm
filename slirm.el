@@ -627,7 +627,7 @@ always stored in .slirm-cache/."
   "Start a systematic literature review of the BibTeX file in the current buffer."
   (interactive)
   (let ((file (buffer-file-name)))
-    (switch-to-buffer (get-buffer-create (format "*Review of %s*" file)))
+    (switch-to-buffer (get-buffer-create (format "*Review of %s*" (file-name-base file))))
     (setq slirm--bibtex-file-tmp file)
     (slirm-mode)))
 
