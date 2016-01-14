@@ -215,7 +215,8 @@
   ("&ndash;" "–") ("&mdash;" "—") ("&lsquo;" "‘") ("&rsquo;" "’")
   ("&sbquo;" "‚") ("&ldquo;" "“") ("&rdquo;" "”") ("&bdquo;" "„")
   ("&dagger;" "†") ("&Dagger;" "‡") ("&permil;" "‰")
-  ("&lsaquo;" "‹") ("&rsaquo;" "›") ("&euro;" "€")))
+  ("&lsaquo;" "‹") ("&rsaquo;" "›") ("&euro;" "€")
+  ("&equals;" "=") ("&lt;" "<") ("&gt;" ">")))
 
 (defun slirm--replace-html-chars (html)
   "Replace all HTML characters like &quot; with their corresponding unicode."
