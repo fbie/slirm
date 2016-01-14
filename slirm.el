@@ -616,6 +616,14 @@ always stored in .slirm-cache/."
       (bibtex-mode)
       (pop-to-buffer (current-buffer)))))
 
+(defun slirm-delete-reviews ()
+  "Delete all reviews from current BibTeX file."
+  (interactive)
+  (when (yes-or-no-p (format "Really delete all reviews from %s and save? " slirm--bibtex-file))
+    (slirm--for-all-entries-do
+      (when (slirm--bibtex-get-field slirm--review (slirm--bibtex-parse))
+	(slirm--bibtex-kill-field slirm--review)))))
+
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
   (save-window-excursion
