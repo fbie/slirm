@@ -249,7 +249,7 @@
   (with-current-buffer (url-retrieve-synchronously url)
     (let ((response (slirm--first-match "<div .*>.*"))
 	  (abstract (buffer-substring (match-beginning 0) (point-max))))
-      (replace-regexp-in-string "%" "\\%"
+      (replace-regexp-in-string "%" (replace-quote "\\%")
 				(slirm--replace-html-chars
 				 (string-trim
 				  (replace-regexp-in-string "<[^>]*>" "" abstract)))))))
