@@ -568,7 +568,8 @@ always stored in .slirm-cache/."
   (interactive)
   (let ((seen nil)
 	(all 0)
-	(unique 0))
+	(unique 0)
+	(remaining 0))
     (slirm--for-all-entries-do
       (let* ((entry (slirm--bibtex-parse))
 	     (key (split-string (slirm--bibtex-get-field "=key=" entry) ":"))
@@ -576,8 +577,10 @@ always stored in .slirm-cache/."
 	(unless (member id seen)
 	  (setq seen (cons id seen)
 		unique (1+ unique)))
-	(setq all (1+ all))))
-    (message (format "Counting %d entries of which %d unique." all unique))))
+	(setq all (1+ all))
+	(unless (slirm--reviewed? entry)
+	  (setq remaining (1+ remaining)))))
+    (message (format "Counting %d entries of which %d unique and %s not yet reviewed." all unique remaining))))
 
 (defun slirm--find-entries (predicate)
   "Find all entries for which PREDICATE holds."
