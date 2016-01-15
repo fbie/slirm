@@ -24,6 +24,15 @@
 
 ;;; Commentary:
 ;;; Convenient browsing of BibTeX files for annotating single entries.
+;;;
+;;; All functions that must be called with (slirm--bibtex-buffer) as
+;;; the current buffer are prefixed with "slirm--bibtex-".  It is okay
+;;; to call such BibTeX functions from within other BibTeX functions
+;;; without enclosing them in slirm--with-bibtex-buffer, which
+;;; temporarily makes (slirm--bibtex-buffer) current and stores the
+;;; point used by Slirm.  Nesting calls to slirm--with-bibtex-buffer
+;;; must be avoided, as slirm--with-bibtex-buffer is not an idempotent
+;;; operation.
 
 ;;; Code:
 
@@ -295,7 +304,7 @@ can be found."
   (when url
     (slirm--get-remote url slirm--get-abstract-map)))
 
-(defun slirm--update-abstract-full-text-url (entry)
+(defun slirm--bibtex-update-abstract-full-text-url (entry)
   "Update abstract and fullTextURL fields if they are empty in ENTRY."
   (when (not (and ;; Any of the two fields is empty.
 	      (slirm--bibtex-get-field slirm--abstract entry)
@@ -309,7 +318,7 @@ can be found."
 
 ;; The main Slirm interaction functions.
 
-(defun slirm--mark-reviewed (entry verdict)
+(defun slirm--bibtex-mark-reviewed (entry verdict)
   "Mark ENTRY as reviewed with VERDICT."
   (slirm--bibtex-maybe-add-field slirm--review entry)
   (let* ((entry (slirm--bibtex-reparse))
@@ -357,13 +366,13 @@ can be found."
   "Mark current entry as accepted."
   (interactive)
   (slirm--with-bibtex-buffer
-    (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--accept)))
+    (slirm--bibtex-mark-reviewed (slirm--bibtex-reparse) slirm--accept)))
 
 (defun slirm-reject ()
   "Mark current entry as rejected."
   (interactive)
   (slirm--with-bibtex-buffer
-    (slirm--mark-reviewed (slirm--bibtex-reparse) slirm--reject)))
+    (slirm--bibtex-mark-reviewed (slirm--bibtex-reparse) slirm--reject)))
 
 (defun slirm--clear ()
   "Clear current slirm buffer."
@@ -426,7 +435,7 @@ can be found."
   "Show ENTRY in the review buffer after update."
   (slirm--show
    (slirm--with-bibtex-buffer
-     (slirm--update-abstract-full-text-url entry)
+     (slirm--bibtex-update-abstract-full-text-url entry)
      (slirm--bibtex-reparse))))
 
 (defun slirm-show-next ()
@@ -441,7 +450,7 @@ can be found."
   (slirm--update-and-show (slirm--with-bibtex-buffer
 			    (slirm--bibtex-parse-prev))))
 
-(defun slirm--find-next-entry (predicate)
+(defun slirm--bibtex-find-next-entry (predicate)
   "Find next entry for which PREDICATE does not hold or the last entry in the file."
   (let ((entry (slirm--bibtex-parse-next)))
     (while (and (funcall predicate entry)
@@ -455,16 +464,16 @@ can be found."
     (when review
       (string-match user-login-name review))))
 
-(defun slirm--find-next-undecided ()
+(defun slirm--bibtex-find-next-undecided ()
   "Return next undecided entry or the last entry in the list."
-  (slirm--find-next-entry 'slirm--reviewed?))
+  (slirm--bibtex-find-next-entry 'slirm--reviewed?))
 
 (defun slirm-show-next-undecided ()
   "Show next undecided entry after current point."
   (interactive)
   (slirm--update-and-show
    (slirm--with-bibtex-buffer
-    (slirm--find-next-undecided))))
+    (slirm--bibtex-find-next-undecided))))
 
 (defun slirm-show-first-undecided ()
   "Show the first not yet annotated entry."
@@ -472,7 +481,7 @@ can be found."
   (slirm--update-and-show
    (slirm--with-bibtex-buffer
      (goto-char 0)
-     (slirm--find-next-undecided))))
+     (slirm--bibtex-find-next-undecided))))
 
 (defun slirm-accept-or-reject ()
   "Choose whether to accept or reject entry and continue to next undecided."
