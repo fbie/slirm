@@ -573,8 +573,8 @@ always stored in .slirm-cache/."
 	(unless (member id seen)
 	  (setq seen (cons id seen)
 		unique (1+ unique)))
-	(setq all (1+ all))
-	(message (format "Counting %d entries of which %d unique." all unique))))))
+	(setq all (1+ all))))
+    (message (format "Counting %d entries of which %d unique." all unique))))
 
 (defun slirm--find-entries (predicate)
   "Find all entries for which PREDICATE holds."
