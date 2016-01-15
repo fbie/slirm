@@ -10,6 +10,7 @@ together and synchronize via Git or the like.
 To use SLIRM, clone this repository (e.g. to ```~/slirm```):
 
 ```
+$ cd
 $ git clone git@github.com:fbie/slirm.git
  Cloning into 'slirm'...
  Checking connectivity... done.
