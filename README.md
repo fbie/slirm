@@ -7,7 +7,17 @@ together and synchronize via Git or the like.
 
 ## Usage ##
 
-To use SLIRM, add the following or similar to your ```.emacs``` file:
+To use SLIRM, clone this repository (e.g. to ```~/slirm```):
+
+```
+$ git clone git@github.com:fbie/slirm.git
+ Cloning into 'slirm'...
+ Checking connectivity... done.
+$ ls slirm/
+ README.md slirm.el
+```
+
+Then, add the following or similar to your ```.emacs``` file:
 
 ```
 (add-to-list 'load-path "~/slirm/")
