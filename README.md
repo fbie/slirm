@@ -72,3 +72,4 @@ the handler itself writes the values to the current entry.
 - [ ] Extend navigation to next/previous/first accepted/rejected entry.
 - [ ] Add options for auto-commit with Magit.
 - [ ] Run ```M-x slirm-start``` with filename as parameter.
+- [ ] Generalize downloading of full-text URLs and abstracts.
