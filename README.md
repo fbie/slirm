@@ -58,6 +58,11 @@ link similarly to this:
 (slirm-add-handlers "acm.org" 'slirm--acm-get-links 'slirm--acm-get-abstract)
 ```
 
+```slirm--acm-get-links``` returns a pair of URLs, where the ```car```
+is the link to the abstract and ```cdr``` the link to the full-text
+file. It may be necessary to generalize this a bit further, such that
+the handler itself writes the values to the current entry.
+
 ## TODOs ##
 
 - [x] Download and cache full text PDF.
