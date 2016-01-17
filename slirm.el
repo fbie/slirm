@@ -1,6 +1,6 @@
-;;; slirm.el -- Systematic Literature Review Mode for Emacs.
+;;; slirm.el --- Systematic Literature Review Mode for Emacs.
 
-;;; Copyright (c) 2016, Florian Biermann fbie@itu.dk
+;;; Copyright 2016 Florian Biermann <fbie@itu.dk>
 ;;;
 ;;; Permission is hereby granted, free of charge, to any person
 ;;; obtaining a copy of this software and associated documentation
@@ -22,9 +22,19 @@
 ;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ;;; DEALINGS IN THE SOFTWARE.
 
+;; Author: Florian Biermann <fbie@itu.dk>
+;; URL: http://github.com/fbie/slirm
+;; Version: 1.0
+;; Package-Requires:
+
 ;;; Commentary:
-;;; Convenient browsing of BibTeX files for annotating single entries.
-;;;
+
+;;; Convenient browsing of BibTeX files for annotating individual
+;;; entries.  See http://github.com/fbie/slirm/Readme.md for further
+;;; instructions.
+
+;;; Code:
+
 ;;; All functions that must be called with (slirm--bibtex-buffer) as
 ;;; the current buffer are prefixed with "slirm--bibtex-".  It is okay
 ;;; to call such BibTeX functions from within other BibTeX functions
@@ -33,8 +43,6 @@
 ;;; point used by Slirm.  Nesting calls to slirm--with-bibtex-buffer
 ;;; must be avoided, as slirm--with-bibtex-buffer is not an idempotent
 ;;; operation.
-
-;;; Code:
 
 (require 'bibtex)
 (require 'subr-x)
