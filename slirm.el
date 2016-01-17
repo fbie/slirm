@@ -1,5 +1,10 @@
 ;;; slirm.el --- Systematic Literature Review Mode for Emacs.
 
+;; Author: Florian Biermann <fbie@itu.dk>
+;; URL: http://github.com/fbie/slirm
+;; Version: 1.0
+;; Package-Requires:
+
 ;;; Copyright 2016 Florian Biermann <fbie@itu.dk>
 ;;;
 ;;; Permission is hereby granted, free of charge, to any person
@@ -21,11 +26,6 @@
 ;;; WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ;;; DEALINGS IN THE SOFTWARE.
-
-;; Author: Florian Biermann <fbie@itu.dk>
-;; URL: http://github.com/fbie/slirm
-;; Version: 1.0
-;; Package-Requires:
 
 ;;; Commentary:
 
