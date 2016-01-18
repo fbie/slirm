@@ -27,13 +27,13 @@
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ;; DEALINGS IN THE SOFTWARE.
 
-;;; Commentary:
+;; Commentary:
 
 ;; Convenient browsing of BibTeX files for annotating individual
 ;; entries.  See http://github.com/fbie/slirm/Readme.md for further
 ;; instructions.
 
-;;; Code:
+;; Code:
 
 ;; All functions that must be called with (slirm--bibtex-buffer) as
 ;; the current buffer are prefixed with "slirm--bibtex-".  It is okay
