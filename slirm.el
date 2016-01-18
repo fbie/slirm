@@ -1,54 +1,54 @@
-;;; slirm.el --- Systematic Literature Review Mode for Emacs.
+;;; slirm.el --- Systematic Literature Review Mode for Emacs.  -*- lexical-binding: t; -*-
 
 ;; Author: Florian Biermann <fbie@itu.dk>
 ;; URL: http://github.com/fbie/slirm
 ;; Version: 1.0
 ;; Package-Requires:
 
-;;; Copyright 2016 Florian Biermann <fbie@itu.dk>
-;;;
-;;; Permission is hereby granted, free of charge, to any person
-;;; obtaining a copy of this software and associated documentation
-;;; files (the "Software"), to deal in the Software without
-;;; restriction, including without limitation the rights to use, copy,
-;;; modify, merge, publish, distribute, sublicense, and/or sell copies
-;;; of the Software, and to permit persons to whom the Software is
-;;; furnished to do so, subject to the following conditions:
-;;;
-;;; The above copyright notice and this permission notice shall be
-;;; included in all copies or substantial portions of the Software.
-;;;
-;;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-;;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-;;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-;;; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-;;; HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-;;; WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-;;; DEALINGS IN THE SOFTWARE.
+;; Copyright 2016 Florian Biermann <fbie@itu.dk>
+;;
+;; Permission is hereby granted, free of charge, to any person
+;; obtaining a copy of this software and associated documentation
+;; files (the "Software"), to deal in the Software without
+;; restriction, including without limitation the rights to use, copy,
+;; modify, merge, publish, distribute, sublicense, and/or sell copies
+;; of the Software, and to permit persons to whom the Software is
+;; furnished to do so, subject to the following conditions:
+;;
+;; The above copyright notice and this permission notice shall be
+;; included in all copies or substantial portions of the Software.
+;;
+;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+;; HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+;; WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+;; DEALINGS IN THE SOFTWARE.
 
 ;;; Commentary:
 
-;;; Convenient browsing of BibTeX files for annotating individual
-;;; entries.  See http://github.com/fbie/slirm/Readme.md for further
-;;; instructions.
+;; Convenient browsing of BibTeX files for annotating individual
+;; entries.  See http://github.com/fbie/slirm/Readme.md for further
+;; instructions.
 
 ;;; Code:
 
-;;; All functions that must be called with (slirm--bibtex-buffer) as
-;;; the current buffer are prefixed with "slirm--bibtex-".  It is okay
-;;; to call such BibTeX functions from within other BibTeX functions
-;;; without enclosing them in slirm--with-bibtex-buffer, which
-;;; temporarily makes (slirm--bibtex-buffer) current and stores the
-;;; point used by Slirm.  Nesting calls to slirm--with-bibtex-buffer
-;;; must be avoided, as slirm--with-bibtex-buffer is not an idempotent
-;;; operation.
+;; All functions that must be called with (slirm--bibtex-buffer) as
+;; the current buffer are prefixed with "slirm--bibtex-".  It is okay
+;; to call such BibTeX functions from within other BibTeX functions
+;; without enclosing them in slirm--with-bibtex-buffer, which
+;; temporarily makes (slirm--bibtex-buffer) current and stores the
+;; point used by Slirm.  Nesting calls to slirm--with-bibtex-buffer
+;; must be avoided, as slirm--with-bibtex-buffer is not an idempotent
+;; operation.
 
 (require 'bibtex)
 (require 'subr-x)
 
-;;; BibTeX utility functions for moving point from entry to entry and
-;;; to access fields conveniently.
+;; BibTeX utility functions for moving point from entry to entry and
+;; to access fields conveniently.
 (defconst slirm--next 're-search-forward)
 (defconst slirm--prev 're-search-backward)
 
@@ -161,7 +161,7 @@
     (when (re-search-forward regex nil t)
       (match-string 0))))
 
-;;; ACM utility functions to download full-text and abstract.
+;; ACM utility functions to download full-text and abstract.
 (defun slirm--acm-get-full-text-link ()
   "Return the link to the full-text from the current buffer containing an ACM website."
   (slirm--first-match "ft_gateway\.cfm\\?id=[0-9]+&ftid=[0-9]+&dwn=[0-9]+&CFID=[0-9]+&CFTOKEN=[0-9]+"))
