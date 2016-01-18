@@ -654,6 +654,7 @@ always stored in .slirm-cache/."
       (bury-buffer other)
       other)))
 
+;;;###autoload
 (defun slirm-start ()
   "Start a systematic literature review of the BibTeX file in the current buffer."
   (interactive)
