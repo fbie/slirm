@@ -47,6 +47,50 @@
 (require 'bibtex)
 (require 'subr-x)
 
+;; Macros to handle with-current-buffer so that we can keep references
+;; to the point of the buffer that we modify.
+
+(defmacro slirm--with-current-buffer (buffer &rest body)
+  "Like (with-current-buffer BUFFER (save-excursion &BODY)) but save the point."
+  (declare (indent 1))
+  ;; We jump through a bunch of hoops to keep a buffer-local reference
+  ;; to our point in the BibTeX buffer.
+  (let ((body-res (cl-gensym "body-res"))
+	(current-point (cl-gensym "current-point")))
+    `(let ((,current-point slirm--point)
+	   (,body-res nil))
+       (with-current-buffer ,buffer
+	 (save-excursion
+	   (goto-char ,current-point)	  ;; Load point.
+	   (setq ,body-res (progn ,@body) ;; Execute body and bind result.
+		 ,current-point (point)))) ;; Store point and return to BibTeX buffer.
+       (setq slirm--point ,current-point)
+       ,body-res))) ;; Return body's result.
+
+(defmacro slirm--with-bibtex-buffer (&rest body)
+  "Perform BODY in slirm--bibtex-buffer."
+  (declare (indent 0))
+  `(slirm--with-current-buffer (slirm--bibtex-buffer)
+     ,@body))
+
+(defmacro slirm--override-readonly (&rest body)
+  "Execute BODY, overriding readonly mode."
+  (declare (indent 0))
+  `(progn
+     (setq inhibit-read-only t)
+     ,@body
+     (setq inhibit-read-only nil)))
+
+(defmacro slirm--for-all-entries-do (&rest body)
+  "Execute BODY once for each entry."
+  (declare (indent 0))
+  `(slirm--with-bibtex-buffer
+     (save-excursion
+       (goto-char (point-min))
+       (while (slirm--bibtex-move-point-to-entry slirm--next)
+	 (progn
+	   ,@body)))))
+
 ;; BibTeX utility functions for moving point from entry to entry and
 ;; to access fields conveniently.
 (defconst slirm--next 're-search-forward)
@@ -662,50 +706,6 @@ always stored in .slirm-cache/."
     (switch-to-buffer (get-buffer-create (format "*Review of %s*" (file-name-base file))))
     (setq slirm--bibtex-file-tmp file)
     (slirm-mode)))
-
-;; Macros to handle with-current-buffer so that we can keep references
-;; to the point of the buffer that we modify.
-
-(defmacro slirm--with-current-buffer (buffer &rest body)
-  "Like (with-current-buffer BUFFER (save-excursion &BODY)) but save the point."
-  (declare (indent 1))
-  ;; We jump through a bunch of hoops to keep a buffer-local reference
-  ;; to our point in the BibTeX buffer.
-  (let ((body-res (cl-gensym "body-res"))
-	(current-point (cl-gensym "current-point")))
-    `(let ((,current-point slirm--point)
-	   (,body-res nil))
-       (with-current-buffer ,buffer
-	 (save-excursion
-	   (goto-char ,current-point)	  ;; Load point.
-	   (setq ,body-res (progn ,@body) ;; Execute body and bind result.
-		 ,current-point (point)))) ;; Store point and return to BibTeX buffer.
-       (setq slirm--point ,current-point)
-       ,body-res))) ;; Return body's result.
-
-(defmacro slirm--with-bibtex-buffer (&rest body)
-  "Perform BODY in slirm--bibtex-buffer."
-  (declare (indent 0))
-  `(slirm--with-current-buffer (slirm--bibtex-buffer)
-     ,@body))
-
-(defmacro slirm--override-readonly (&rest body)
-  "Execute BODY, overriding readonly mode."
-  (declare (indent 0))
-  `(progn
-     (setq inhibit-read-only t)
-     ,@body
-     (setq inhibit-read-only nil)))
-
-(defmacro slirm--for-all-entries-do (&rest body)
-  "Execute BODY once for each entry."
-  (declare (indent 0))
-  `(slirm--with-bibtex-buffer
-     (save-excursion
-       (goto-char (point-min))
-       (while (slirm--bibtex-move-point-to-entry slirm--next)
-	 (progn
-	   ,@body)))))
 
 (define-derived-mode slirm-mode special-mode
   "Systematic Literature Review Mode."
