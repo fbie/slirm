@@ -80,5 +80,5 @@ the handler itself writes the values to the current entry.
 - [x] Edit annotations.
 - [ ] Extend navigation to next/previous/first accepted/rejected entry.
 - [ ] Add options for auto-commit with Magit.
-- [ ] Run ```slirm-start``` with filename as parameter.
+- [x] Run ```slirm-start``` with filename as parameter.
 - [ ] Generalize downloading of full-text URLs and abstracts.
