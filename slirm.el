@@ -707,7 +707,7 @@ always stored in .slirm-cache/."
 (defun slirm--bibtex-buffer ()
   "Return the buffer containing the BibTeX file."
   (save-window-excursion
-    (let ((other (find-file slirm--bibtex-file)))
+    (let ((other (find-file-existing slirm--bibtex-file)))
       (bury-buffer other)
       other)))
 
