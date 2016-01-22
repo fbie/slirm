@@ -5,9 +5,16 @@ designed for performing systematic literature reviews. Everything is
 happening in plain-text BibTeX files, such that you can easily work
 together and synchronize via Git or the like.
 
-## Usage ##
+## Installation ##
 
-To use SLIRM, clone this repository (e.g. to ```~/slirm```):
+### MELPA ###
+
+SLIRM is available on [MELPA](http://melpa.org)!
+
+### Manually ###
+
+To install SLIRM manually, clone this repository (e.g. to
+```~/slirm```):
 
 ```
 $ cd
@@ -27,9 +34,11 @@ Then, add the following or similar to your ```.emacs``` file:
 (require 'slirm)
 ```
 
-Now open a BibTeX file with ```C-x f```. From within the new buffer,
-run ```M-x slirm-start```. The BibTeX buffer will be replaced with a
-SLIRM buffer, which shows the first not yet reviewed entry.
+### Usage ###
+
+Open a BibTeX file with ```C-x C-f```. From within the new buffer, run
+```M-x slirm-start RET```. The BibTeX buffer will be replaced with a SLIRM
+buffer, which shows the first not yet reviewed entry.
 
 Press ```SPC``` and enter *yes* or *no* to keep or reject the
 entry. You will automatically proceed to the next first not yet
@@ -71,5 +80,5 @@ the handler itself writes the values to the current entry.
 - [x] Edit annotations.
 - [ ] Extend navigation to next/previous/first accepted/rejected entry.
 - [ ] Add options for auto-commit with Magit.
-- [ ] Run ```M-x slirm-start``` with filename as parameter.
+- [ ] Run ```slirm-start``` with filename as parameter.
 - [ ] Generalize downloading of full-text URLs and abstracts.
