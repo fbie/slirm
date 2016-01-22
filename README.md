@@ -13,8 +13,7 @@ SLIRM is available on [MELPA](http://melpa.org)!
 
 ### Manually ###
 
-To install SLIRM manually, clone this repository (e.g. to
-```~/slirm```):
+To install SLIRM manually, clone this repository (e.g. into ```~/slirm```):
 
 ```
 $ cd
