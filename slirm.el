@@ -305,13 +305,26 @@
       (setq replaced (replace-regexp-in-string (elt r 0) (elt r 1) replaced)))
     replaced))
 
+(defun slirm--replace-regexps-in-string (regexps string)
+  "Replace all of the regular-expression and string pairs from REGEXPS in STRING."
+  (if regexps
+      (let* ((head (car regexps))
+	     (tail (cdr regexps))
+	     (regexp (car head))
+	     (replacement (cdr head)))
+	(slirm--replace-regexps-in-string tail (replace-regexp-in-string regexp replacement string)))
+    string))
+
 (defun slirm--acm-get-abstract (url)
   "Download and format abstract text from URL."
   (with-current-buffer (url-retrieve-synchronously url)
-    (let ((response (slirm--first-match "<div .*>.*"))
-	  (abstract (buffer-substring (match-beginning 0) (point-max))))
-      (replace-regexp-in-string "%" (replace-quote "\\%")
-				(slirm--replace-html-chars
+    (slirm--first-match "<div .*>.*")
+    (let ((abstract (buffer-substring (match-beginning 0) (point-max))))
+      (slirm--replace-regexps-in-string (list ;; Replace latex reserved characters.
+					 '("%" (replace-quote "\\%"))
+					 '("{" (replace-quote "\\{"))
+					 '("}" (replace-quote "\\}")))
+				(slirm--replace-html-chars ;; Replace HTML characters.
 				 (string-trim
 				  (replace-regexp-in-string "<[^>]*>" "" abstract)))))))
 
