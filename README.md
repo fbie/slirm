@@ -33,7 +33,7 @@ Then, add the following or similar to your ```.emacs``` file:
 (require 'slirm)
 ```
 
-### Usage ###
+## Usage ##
 
 Open a BibTeX file with ```C-x C-f```. From within the new buffer, run
 ```M-x slirm-start RET```. The BibTeX buffer will be replaced with a SLIRM
