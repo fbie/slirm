@@ -9,6 +9,8 @@ together and synchronize via Git or the like.
 
 ### MELPA ###
 
+[![MELPA](https://melpa.org/packages/slirm-badge.svg)](https://melpa.org/#/slirm)
+
 SLIRM is available on [MELPA](http://melpa.org)!
 
 ### Manually ###
