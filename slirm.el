@@ -688,12 +688,14 @@ always stored in .slirm-cache/."
   (let* ((min-reviews (read-number "Mimimun number of positive reviews: " 1))
 	 (predicate (lambda (entry) (<= min-reviews (slirm--count-positive-reviews entry))))
 	 (entries (slirm--find-entries predicate))
-	 (filename (format "%s-accepted.bib" (file-name-sans-extension (file-name-base slirm--bibtex-file)))))
-    (with-current-buffer (get-buffer-create (read-string "Export to file: " (slirm--make-absolute filename)))
+	 (default (format "%s-accepted.bib" (file-name-sans-extension (file-name-base slirm--bibtex-file))))
+	 (filename (read-file-name "Write to: " nil nil nil (slirm--make-absolute default) nil)))
+    (with-current-buffer (get-buffer-create filename)
       (save-excursion
 	(dolist (entry entries)
 	  (slirm--bibtex-write entry)))
       (bibtex-mode)
+      (write-file filename)
       (pop-to-buffer (current-buffer)))))
 
 (defun slirm-delete-reviews ()
